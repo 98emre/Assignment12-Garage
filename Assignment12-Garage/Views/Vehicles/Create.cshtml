@@ -1,4 +1,4 @@
-﻿@model Assignment12_Garage.Models.Vehicle
+@model Assignment12_Garage.Models.Vehicle
 
 @{
     ViewData["Title"] = "Create";
@@ -12,43 +12,56 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <div class="form-group">
                 <label asp-for="VehicleType" class="control-label"></label>
-                <select asp-for="VehicleType" class="form-control"></select>
+                <select asp-for="VehicleType" class="form-control">
+                    <option value="">Choose vehicle type</option>
+                    @foreach (var vehicleType in Enum.GetValues(typeof(VehicleType)))
+                    {
+                        <option value="@vehicleType">@vehicleType</option>
+                    }
+                </select>
                 <span asp-validation-for="VehicleType" class="text-danger"></span>
             </div>
+
+
             <div class="form-group">
                 <label asp-for="RegNumber" class="control-label"></label>
                 <input asp-for="RegNumber" class="form-control" />
                 <span asp-validation-for="RegNumber" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label asp-for="Color" class="control-label"></label>
                 <input asp-for="Color" class="form-control" />
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label asp-for="Brand" class="control-label"></label>
                 <input asp-for="Brand" class="form-control" />
                 <span asp-validation-for="Brand" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label asp-for="VehicleModel" class="control-label"></label>
                 <input asp-for="VehicleModel" class="form-control" />
                 <span asp-validation-for="VehicleModel" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label asp-for="NrOfWheels" class="control-label"></label>
                 <input asp-for="NrOfWheels" class="form-control" />
                 <span asp-validation-for="NrOfWheels" class="text-danger"></span>
             </div>
-            <!--
+            
             <div class="form-group">
                 <label asp-for="ArrivalDate" class="control-label"></label>
                 <input asp-for="ArrivalDate" class="form-control" />
                 <span asp-validation-for="ArrivalDate" class="text-danger"></span>
             </div>
-            -->
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
