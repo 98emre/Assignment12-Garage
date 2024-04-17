@@ -25,7 +25,7 @@ namespace Assignment12_Garage.Models
         [Required(ErrorMessage = "Add model for your vehicle")]
         public string VehicleModel { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, 100)]
         [Required(ErrorMessage = "Add nr of wheels for your vehicle")]
         public int NrOfWheels {  get; set; }
 

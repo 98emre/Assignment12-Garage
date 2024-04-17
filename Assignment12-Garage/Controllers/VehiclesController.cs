@@ -86,9 +86,9 @@ namespace Assignment12_Garage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleType,RegNumber,Color,Brand,VehicleModel,NrOfWheels,ArrivalDate")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleType,RegNumber,Color,Brand,VehicleModel,NrOfWheels")] Vehicle updatedVehicle)
         {
-            if (id != vehicle.Id)
+            if (id != updatedVehicle.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,21 @@ namespace Assignment12_Garage.Controllers
             {
                 try
                 {
-                    _context.Update(vehicle);
+                    var existingVehicle = await _context.Vehicle.FindAsync(id);
+
+                    existingVehicle.VehicleType = updatedVehicle.VehicleType;
+                    existingVehicle.RegNumber = updatedVehicle.RegNumber;
+                    existingVehicle.Color = updatedVehicle.Color;
+                    existingVehicle.Brand = updatedVehicle.Brand;
+                    existingVehicle.VehicleModel = updatedVehicle.VehicleModel;
+                    existingVehicle.NrOfWheels = updatedVehicle.NrOfWheels;
+
+                    _context.Update(existingVehicle);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleExists(vehicle.Id))
+                    if (!VehicleExists(updatedVehicle.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +122,7 @@ namespace Assignment12_Garage.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+            return View(updatedVehicle);
         }
 
         // GET: Vehicles/Delete/5
