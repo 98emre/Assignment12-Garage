@@ -23,9 +23,9 @@ namespace Assignment12_Garage.Controllers
         {
             if ((string.IsNullOrEmpty(regNumber)))
             {
-                return View("Error");
+                TempData["Message"] = "Input is empty, write something";
+                return RedirectToAction("Index");
             }
-
 
             var search = _context.Vehicle.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim())).ToList();
 
