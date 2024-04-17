@@ -31,7 +31,8 @@ namespace Assignment12_Garage.Controllers
 
             if(search.Count == 0)
             {
-                ViewData["Message"] = "Could not find vehicle with the registration number";
+                TempData["Message"] = "Could not find vehicle with the registration number: " + regNumber;
+                return RedirectToAction("index");
             }
 
             return View("index", search);
