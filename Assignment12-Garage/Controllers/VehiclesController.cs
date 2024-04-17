@@ -19,6 +19,24 @@ namespace Assignment12_Garage.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Filter(string regNumber)
+        {
+            if ((string.IsNullOrEmpty(regNumber)))
+            {
+                return View("Error");
+            }
+
+
+            var search = _context.Vehicle.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim())).ToList();
+
+            if(search.Count == 0)
+            {
+                ViewData["Message"] = "Could not find vehicle with the registration number";
+            }
+
+            return View("index", search);
+        }
+
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {

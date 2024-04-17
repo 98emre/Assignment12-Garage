@@ -6,6 +6,13 @@
 
 <h1>Index</h1>
 
+<form asp-action="Filter" method="get" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
