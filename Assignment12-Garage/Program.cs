@@ -1,3 +1,6 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Assignment12_Garage.Data;
 namespace Assignment12_Garage
 {
     public class Program
@@ -5,6 +8,8 @@ namespace Assignment12_Garage
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<Assignment12_GarageContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Assignment12_GarageContext") ?? throw new InvalidOperationException("Connection string 'Assignment12_GarageContext' not found.")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
