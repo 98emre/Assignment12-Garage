@@ -62,11 +62,9 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
-            try
-            {
                 if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
                 {
-                    TempData["Message"] = "Please provide input for at least one search criteria.";
+                    TempData["SearchFail"] = "Please provide input for at least one search criteria.";
                     return RedirectToAction("Index");
                 }
 
@@ -89,24 +87,46 @@ namespace Assignment12_Garage.Controllers
 
                 var search = await query.ToListAsync();
 
-                if (search.Count == 0)
-                {
-                    TempData["Message"] = "No vehicles found";
-                    return RedirectToAction("Index");
-                }
-
-                return View("Index", search);
-            }
-            catch (Exception ex)
+            if (search.Count == 0)
             {
-                TempData["Message"] = "An error occurred while processing the request.";
-                return RedirectToAction("Index");
+                TempData["SearchFail"] = "No vehicles found";
             }
+
+            else
+            {
+                TempData["SearchSuccess"] = "Search was successful";
+            }
+
+            return View("Index", search);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowAll()
+        {
+            var query = _context.Vehicle.AsQueryable();
+            var search = await query.ToListAsync();
+
+            if (search.Count == 0)
+            {
+                TempData["SearchFail"] = "There is no vehicles in the system";
+            }
+
+            else
+            {
+                TempData["SearchSuccess"] = "Showing all vehicles was successful";
+            }
+
+            return View("Index", search);
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
+            if (TempData.ContainsKey("Message"))
+            {
+                ViewBag.Message = TempData["Message"];
+            }
+
             return View(await _context.Vehicle.ToListAsync());
         }
 
@@ -151,6 +171,8 @@ namespace Assignment12_Garage.Controllers
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
+
+                TempData["Message"] = "Vehicle is checked in";
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicle);
@@ -211,8 +233,10 @@ namespace Assignment12_Garage.Controllers
                         throw;
                     }
                 }
+                TempData["Message"] = "Vehicle is updated";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(updatedVehicle);
         }
 
@@ -224,13 +248,14 @@ namespace Assignment12_Garage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(m => m.Id == id);
+
             if (vehicle == null)
             {
                 return NotFound();
             }
 
+            TempData["Message"] = "Vehicle is updated";
             return View(vehicle);
         }
 
@@ -246,6 +271,8 @@ namespace Assignment12_Garage.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Vehicle is checked out";
             return RedirectToAction(nameof(Index));
         }
 

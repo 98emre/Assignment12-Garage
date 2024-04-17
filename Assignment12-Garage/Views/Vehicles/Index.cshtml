@@ -6,9 +6,23 @@
 
 <h1>Index</h1>
 
-@if(TempData.ContainsKey("Message")){
+@if(TempData.ContainsKey("SearchFail")){
     <div class="alert alert-warning" role="alert">
-         @TempData["Message"]
+        @TempData["SearchFail"]
+    </div>
+}
+
+@if (TempData.ContainsKey("SearchSuccess"))
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SearchSuccess"]
+    </div>
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
     </div>
 }
 
@@ -26,9 +40,11 @@
     </div>
 
     <br/>
-    <a asp-action="Create" class="btn btn-secondary">Check In</a>
+    <a asp-action="Create" class="btn btn-primary">Check In</a>
     <span>|</span>
-    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="submit" class="btn btn-secondary">Search</button>
+    <span>|</span>
+    <a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
 </form>
 
 
