@@ -13,6 +13,8 @@
 }
 
 <form asp-action="Filter" method="get" class="form-inline mb-3">
+
+
     <div class="form-group mr-2">
         <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
     </div>
@@ -22,12 +24,15 @@
     <div class="form-group mr-2">
         <input type="text" class="form-control" name="brand" placeholder="Search by brand">
     </div>
+
+    <br/>
+    <a asp-action="Create" class="btn btn-secondary">Check In</a>
+    <span>|</span>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+
 <table class="table">
     <thead>
         <tr>
