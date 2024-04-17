@@ -58,6 +58,11 @@ namespace Assignment12_Garage.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
+                {
+                    ModelState.AddModelError("RegNumber", "A vehicle with this registration number already exists.");
+                    return View(vehicle);
+                }
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
