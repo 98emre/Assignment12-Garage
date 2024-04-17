@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment12_Garage.Data;
 using Assignment12_Garage.Models;
+using Assignment12_Garage.Models.ViewModels;
 
 namespace Assignment12_Garage.Controllers
 {
@@ -128,6 +129,23 @@ namespace Assignment12_Garage.Controllers
             }
 
             return View(await _context.Vehicle.ToListAsync());
+        }
+
+        public async Task<IActionResult> VehicleOverview()
+        {
+            var model = _context.Vehicle.Select(e => new VehicleViewModel
+            {
+                Id = e.Id,
+                VehicleType = e.VehicleType,
+                RegNumber = e.RegNumber,
+                ArrivalDate = e.ArrivalDate,
+            });
+            if (TempData.ContainsKey("Message"))
+            {
+                ViewBag.Message = TempData["Message"];
+            }
+
+            return View("VehicleOverview",await model.ToListAsync());
         }
 
         // GET: Vehicles/Details/5
