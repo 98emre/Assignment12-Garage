@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment12_Garage.Data;
 using Assignment12_Garage.Models;
+using Assignment12_Garage.Models.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Assignment12_Garage.Controllers
 {
@@ -32,18 +34,6 @@ namespace Assignment12_Garage.Controllers
                 case "regNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber);
                     break;
-                case "color":
-                    vehicles = vehicles.OrderBy(v => v.Color);
-                    break;
-                case "brand":
-                    vehicles = vehicles.OrderBy(v => v.Brand);
-                    break;
-                case "vehicleModel":
-                    vehicles = vehicles.OrderBy(v => v.VehicleModel);
-                    break;
-                case "nrOfWheels":
-                    vehicles = vehicles.OrderBy(v => v.NrOfWheels);
-                    break;
                 case "arrivalDate":
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
@@ -52,7 +42,14 @@ namespace Assignment12_Garage.Controllers
                     break;
             }
 
-            var sortedVehicles = await vehicles.ToListAsync();
+            var sortedVehicles = await vehicles
+                        .Select(v => new VehicleViewModel
+                        {
+                            Id = v.Id,
+                            VehicleType = v.VehicleType,
+                            RegNumber = v.RegNumber,
+                            ArrivalDate = v.ArrivalDate
+                        }).ToListAsync();
 
             return View("Index", sortedVehicles);
         }
@@ -85,7 +82,14 @@ namespace Assignment12_Garage.Controllers
                     query = query.Where(v => v.Brand.Equals(brand.Trim()));
                 }
 
-                var search = await query.ToListAsync();
+            var search = await query
+                        .Select(v => new VehicleViewModel
+                        {
+                            Id = v.Id,
+                            VehicleType = v.VehicleType,
+                            RegNumber = v.RegNumber,
+                            ArrivalDate = v.ArrivalDate
+                        }).ToListAsync();
 
             if (search.Count == 0)
             {
@@ -104,7 +108,14 @@ namespace Assignment12_Garage.Controllers
         public async Task<IActionResult> ShowAll()
         {
             var query = _context.Vehicle.AsQueryable();
-            var search = await query.ToListAsync();
+            var search = await query
+                      .Select(v => new VehicleViewModel
+                      {
+                          Id = v.Id,
+                          VehicleType = v.VehicleType,
+                          RegNumber = v.RegNumber,
+                          ArrivalDate = v.ArrivalDate
+                      }).ToListAsync();
 
             if (search.Count == 0)
             {
@@ -127,7 +138,16 @@ namespace Assignment12_Garage.Controllers
                 ViewBag.Message = TempData["Message"];
             }
 
-            return View(await _context.Vehicle.ToListAsync());
+            var vehicles = await _context.Vehicle
+                .Select(v => new VehicleViewModel
+                {
+                    Id = v.Id,
+                    VehicleType = v.VehicleType,
+                    RegNumber = v.RegNumber,
+                    ArrivalDate = v.ArrivalDate
+                }).ToListAsync();
+
+            return View(vehicles);
         }
 
         // GET: Vehicles/Details/5

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Assignment12_Garage.Models.Vehicle>
+﻿@model IEnumerable<Assignment12_Garage.Models.ViewModels.VehicleViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -61,22 +61,6 @@
             </th>
 
             <th>
-                <a asp-action="Sort" asp-route-sortOrder="color">Color</a>
-            </th>
-
-            <th>
-                <a asp-action="Sort" asp-route-sortOrder="brand">Brand</a>
-            </th>
-
-            <th>
-                <a asp-action="Sort" asp-route-sortOrder="vehicleModel">Vehicle Model</a>
-            </th>
-
-            <th>
-                <a asp-action="Sort" asp-route-sortOrder="nrOfWheels">Number of Wheels</a>
-            </th>
-
-            <th>
                <a asp-action="Sort" asp-route-sortOrder="arrivalDate">Arrival Date</a>
             </th>
 
@@ -91,18 +75,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RegNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleModel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NrOfWheels)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ArrivalDate)
