@@ -19,37 +19,47 @@ namespace Assignment12_Garage.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Sort(string regNumber, string color, string brand)
+        [HttpGet]
+        public async Task<IActionResult> Sort(string sortOrder)
         {
-            var query = _context.Vehicle.AsQueryable();
+            var vehicles = _context.Vehicle.AsQueryable();
 
-            if (!string.IsNullOrEmpty(regNumber))
+            switch (sortOrder)
             {
-                query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
+                case "vehicleType":
+                    vehicles = vehicles.OrderBy(v => v.VehicleType);
+                    break;
+                case "regNumber":
+                    vehicles = vehicles.OrderBy(v => v.RegNumber);
+                    break;
+                case "color":
+                    vehicles = vehicles.OrderBy(v => v.Color);
+                    break;
+                case "brand":
+                    vehicles = vehicles.OrderBy(v => v.Brand);
+                    break;
+                case "vehicleModel":
+                    vehicles = vehicles.OrderBy(v => v.VehicleModel);
+                    break;
+                case "nrOfWheels":
+                    vehicles = vehicles.OrderBy(v => v.NrOfWheels);
+                    break;
+                case "arrivalDate":
+                    vehicles = vehicles.OrderBy(v => v.ArrivalDate);
+                    break;
+                default:
+                    vehicles = vehicles.OrderBy(v => v.Id); 
+                    break;
             }
 
-            if (!string.IsNullOrEmpty(color))
-            {
-                query = query.Where(v => v.Color.Equals(color, StringComparison.OrdinalIgnoreCase));
-            }
+            var sortedVehicles = await vehicles.ToListAsync();
 
-            if (!string.IsNullOrEmpty(brand))
-            {
-                query = query.Where(v => v.Brand.Equals(brand, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var search = await query.ToListAsync();
-
-            if (search.Count == 0)
-            {
-                TempData["Message"] = "No vehicles found matching the specified criteria.";
-                return RedirectToAction("Index");
-            }
-
-            return View("Index", search);
+            return View("Index", sortedVehicles);
         }
 
 
+
+        [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
             try

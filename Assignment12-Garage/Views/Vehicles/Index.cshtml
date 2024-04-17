@@ -32,26 +32,33 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
+                <a asp-action="Sort" asp-route-sortOrder="vehicleType">Vehicle Type</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.RegNumber)
+                <a asp-action="Sort" asp-route-sortOrder="regNumber">Registration Number</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                <a asp-action="Sort" asp-route-sortOrder="color">Color</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.Brand)
+                <a asp-action="Sort" asp-route-sortOrder="brand">Brand</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.VehicleModel)
+                <a asp-action="Sort" asp-route-sortOrder="vehicleModel">Vehicle Model</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.NrOfWheels)
+                <a asp-action="Sort" asp-route-sortOrder="nrOfWheels">Number of Wheels</a>
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalDate)
+               <a asp-action="Sort" asp-route-sortOrder="arrivalDate">Arrival Date</a>
             </th>
+
             <th></th>
         </tr>
     </thead>
