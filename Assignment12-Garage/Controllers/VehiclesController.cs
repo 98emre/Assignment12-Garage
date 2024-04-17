@@ -19,23 +19,89 @@ namespace Assignment12_Garage.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Filter(string regNumber)
+        [HttpGet]
+        public async Task<IActionResult> Sort(string sortOrder)
         {
-            if ((string.IsNullOrEmpty(regNumber)))
+            var vehicles = _context.Vehicle.AsQueryable();
+
+            switch (sortOrder)
             {
-                TempData["Message"] = "Input is empty, write something";
+                case "vehicleType":
+                    vehicles = vehicles.OrderBy(v => v.VehicleType);
+                    break;
+                case "regNumber":
+                    vehicles = vehicles.OrderBy(v => v.RegNumber);
+                    break;
+                case "color":
+                    vehicles = vehicles.OrderBy(v => v.Color);
+                    break;
+                case "brand":
+                    vehicles = vehicles.OrderBy(v => v.Brand);
+                    break;
+                case "vehicleModel":
+                    vehicles = vehicles.OrderBy(v => v.VehicleModel);
+                    break;
+                case "nrOfWheels":
+                    vehicles = vehicles.OrderBy(v => v.NrOfWheels);
+                    break;
+                case "arrivalDate":
+                    vehicles = vehicles.OrderBy(v => v.ArrivalDate);
+                    break;
+                default:
+                    vehicles = vehicles.OrderBy(v => v.Id); 
+                    break;
+            }
+
+            var sortedVehicles = await vehicles.ToListAsync();
+
+            return View("Index", sortedVehicles);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Filter(string regNumber, string color, string brand)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
+                {
+                    TempData["Message"] = "Please provide input for at least one search criteria.";
+                    return RedirectToAction("Index");
+                }
+
+                var query = _context.Vehicle.AsQueryable();
+
+                if (!string.IsNullOrEmpty(regNumber))
+                {
+                    query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
+                }
+
+                if (!string.IsNullOrEmpty(color))
+                {
+                    query = query.Where(v => v.Color.Equals(color.Trim()));
+                }
+
+                if (!string.IsNullOrEmpty(brand))
+                {
+                    query = query.Where(v => v.Brand.Equals(brand.Trim()));
+                }
+
+                var search = await query.ToListAsync();
+
+                if (search.Count == 0)
+                {
+                    TempData["Message"] = "No vehicles found";
+                    return RedirectToAction("Index");
+                }
+
+                return View("Index", search);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "An error occurred while processing the request.";
                 return RedirectToAction("Index");
             }
-
-            var search = _context.Vehicle.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim())).ToList();
-
-            if(search.Count == 0)
-            {
-                TempData["Message"] = "Could not find vehicle with the registration number: " + regNumber;
-                return RedirectToAction("index");
-            }
-
-            return View("index", search);
         }
 
         // GET: Vehicles
