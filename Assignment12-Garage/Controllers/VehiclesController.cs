@@ -9,6 +9,7 @@ using Assignment12_Garage.Data;
 using Assignment12_Garage.Models;
 using Assignment12_Garage.Models.ViewModels;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Assignment12_Garage.Controllers
 {
@@ -19,6 +20,32 @@ namespace Assignment12_Garage.Controllers
         public VehiclesController(Assignment12_GarageContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult Statistics()
+        {
+            var parkedVehicles = _context.Vehicle.ToList();
+
+            var vehicleTypeCount = new Dictionary<VehicleType, int>();
+
+            foreach (var vehicle in parkedVehicles)
+            {
+                if (!vehicleTypeCount.ContainsKey(vehicle.VehicleType))
+                {
+                    vehicleTypeCount[vehicle.VehicleType] = 0;
+                }
+
+                vehicleTypeCount[vehicle.VehicleType]++;
+            }
+
+
+            var totalWheels = parkedVehicles.Sum(v => v.NrOfWheels);
+
+            ViewBag.VehicleType = vehicleTypeCount;
+            ViewBag.TotalWheels = totalWheels;
+
+            return View();
         }
 
         [HttpGet]
