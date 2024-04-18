@@ -70,10 +70,9 @@ namespace Assignment12_Garage.Controllers
             var query = _context.Vehicle.AsQueryable();
 
             query = query.Where(v =>
-            wordsInQuery.Any(part => v.RegNumber.Equals(part)) ||
-            wordsInQuery.Any(part => v.Color.Equals(part)) ||
-            wordsInQuery.Any(part => v.Brand.Equals(part)));
-
+            wordsInQuery.Any(part => v.RegNumber.Equals(part.Trim())) ||
+            wordsInQuery.Any(part => v.Color.Equals(part.Trim())) ||
+            wordsInQuery.Any(part => v.Brand.Equals(part.Trim())));
 
             var search = await query
                         .Select(v => new VehicleViewModel
