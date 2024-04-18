@@ -20,5 +20,6 @@
             const double HourlyRate = 50;
             Price = TotalParkingHours * HourlyRate;
         }
+
     }
 }
