@@ -38,7 +38,7 @@ namespace Assignment12_Garage.Controllers
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.Id); 
+                    vehicles = vehicles.OrderBy(v => v.Id);
                     break;
             }
 
@@ -57,30 +57,24 @@ namespace Assignment12_Garage.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Filter(string regNumber, string color, string brand)
+        public async Task<IActionResult> Filter(string searchQuery)
         {
-                if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
-                {
-                    TempData["SearchFail"] = "Please provide input for at least one search criteria.";
-                    return RedirectToAction("Index");
-                }
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                TempData["SearchFail"] = "Please provide input for at least one search criteria.";
+                return RedirectToAction("Index");
+            }
 
-                var query = _context.Vehicle.AsQueryable();
+            string[] wordsInQuery = searchQuery.Split();
 
-                if (!string.IsNullOrEmpty(regNumber))
-                {
-                    query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
-                }
+            var query = _context.Vehicle.AsQueryable();
 
-                if (!string.IsNullOrEmpty(color))
-                {
-                    query = query.Where(v => v.Color.Equals(color.Trim()));
-                }
-
-                if (!string.IsNullOrEmpty(brand))
-                {
-                    query = query.Where(v => v.Brand.Equals(brand.Trim()));
-                }
+            for (int i = 0; i < wordsInQuery.Length; i++)
+            {
+                query = query.Where(v => v.RegNumber.Equals(wordsInQuery[i].ToUpper().Trim()));
+                query = query.Where(v => v.Color.Equals(wordsInQuery[i].Trim()));
+                query = query.Where(v => v.Brand.Equals(wordsInQuery[i].Trim()));
+            }
 
             var search = await query
                         .Select(v => new VehicleViewModel
@@ -183,7 +177,7 @@ namespace Assignment12_Garage.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
+                if (_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
                 {
                     ModelState.AddModelError("RegNumber", "A vehicle with this registration number already exists.");
                     return View(vehicle);
