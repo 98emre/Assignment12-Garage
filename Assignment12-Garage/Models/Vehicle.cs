@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assignment12_Garage.Models
 {
@@ -21,7 +22,6 @@ namespace Assignment12_Garage.Models
         [Required(ErrorMessage = "Add brand for your vehicle")]
         public string Brand { get; set; }
 
-
         [Required(ErrorMessage = "Add model for your vehicle")]
         public string VehicleModel { get; set; }
 
@@ -30,5 +30,8 @@ namespace Assignment12_Garage.Models
         public int NrOfWheels {  get; set; }
 
         public DateTime ArrivalDate { get; set; }
+
+        [Column("ParkingSpot")]
+        public string ParkingSpot { get; set; }
     }
 }

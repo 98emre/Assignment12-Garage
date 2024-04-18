@@ -23,7 +23,8 @@ namespace Assignment12_Garage.Migrations
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VehicleModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NrOfWheels = table.Column<int>(type: "int", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ParkingSpot = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
