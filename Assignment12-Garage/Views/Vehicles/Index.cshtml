@@ -61,9 +61,9 @@
                                 @Html.DisplayFor(modelItem => item.ArrivalDate)
                             </td>
                             <td class="px-6 py-3">
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
+                                <a class="btn-sm btn-warning p-1 text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a class="btn-sm btn-success p-1 text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a class="btn-sm btn-danger p-1 text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
                             </td>
                         </tr>
                     }
