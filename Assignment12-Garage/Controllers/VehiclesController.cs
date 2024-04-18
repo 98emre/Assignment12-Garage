@@ -150,23 +150,6 @@ namespace Assignment12_Garage.Controllers
             return View(vehicles);
         }
 
-        public async Task<IActionResult> VehicleOverview()
-        {
-            var model = _context.Vehicle.Select(e => new VehicleViewModel
-            {
-                Id = e.Id,
-                VehicleType = e.VehicleType,
-                RegNumber = e.RegNumber,
-                ArrivalDate = e.ArrivalDate,
-            });
-            if (TempData.ContainsKey("Message"))
-            {
-                ViewBag.Message = TempData["Message"];
-            }
-
-            return View("VehicleOverview",await model.ToListAsync());
-        }
-
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
