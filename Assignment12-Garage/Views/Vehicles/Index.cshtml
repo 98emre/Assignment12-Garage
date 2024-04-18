@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1 class="d-flex justify-content-center">Garage</h1>
 
 @if(TempData.ContainsKey("SearchFail")){
     <div class="alert alert-warning" role="alert">
@@ -26,24 +26,11 @@
     </div>
 }
 
-<form asp-action="Filter" method="get" class="form-inline mb-3">
-
-
-    <div class="form-group mr-2">
-        <input type="text" class="form-control" name="searchQuery" placeholder="Search...">
-    </div>
-
-    <br/>
-    <a asp-action="Create" class="btn btn-primary">Check In</a>
-    <span>|</span>
-    <button type="submit" class="btn btn-secondary">Search</button>
-    <span>|</span>
-    <a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
-</form>
 
 
 
-<table class="table">
+
+<table class="table table-responsive">
     <thead>
         <tr>
             <th>
@@ -82,3 +69,20 @@
 }
     </tbody>
 </table>
+<a asp-action="Create" class="btn btn-primary">Check In</a>
+<a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
+<form asp-action="Filter" method="get" class="form-inline m-3">
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="color" placeholder="Search by color">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="brand" placeholder="Search by brand">
+    </div>
+    <br />
+    <span>|</span>
+    <button type="submit" class="btn btn-secondary">Search</button>
+    <span>|</span>
+</form>
