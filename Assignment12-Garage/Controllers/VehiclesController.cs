@@ -69,12 +69,11 @@ namespace Assignment12_Garage.Controllers
 
             var query = _context.Vehicle.AsQueryable();
 
-            for (int i = 0; i < wordsInQuery.Length; i++)
-            {
-                query = query.Where(v => v.RegNumber.Equals(wordsInQuery[i].ToUpper().Trim()));
-                query = query.Where(v => v.Color.Equals(wordsInQuery[i].Trim()));
-                query = query.Where(v => v.Brand.Equals(wordsInQuery[i].Trim()));
-            }
+            query = query.Where(v =>
+            wordsInQuery.Any(part => v.RegNumber.Equals(part)) ||
+            wordsInQuery.Any(part => v.Color.Equals(part)) ||
+            wordsInQuery.Any(part => v.Brand.Equals(part)));
+
 
             var search = await query
                         .Select(v => new VehicleViewModel
