@@ -56,6 +56,14 @@
     </dl>
     
     <form asp-action="Delete">
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="wantReceipt" name="wantReceipt">
+                <label class="form-check-label" for="wantReceipt">
+                    Want receipt
+                </label>
+            </div>
+        </div>
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Check Out" class="btn btn-danger" />
         <span>|</span>
