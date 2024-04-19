@@ -88,25 +88,33 @@ namespace Assignment12_Garage.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Filter(string searchQuery)
+        public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
             if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
-                {
-                    TempData["SearchFail"] = "Please provide input for at least one search criteria.";
-                    return RedirectToAction("Index");
-                }
-
-            string[] wordsInQuery = searchQuery.Split();
+            {
+                TempData["SearchFail"] = "Please provide input for at least one search criteria.";
+                return RedirectToAction("Index");
+            }
 
             var query = _context.Vehicle.AsQueryable();
 
-            query = query.Where(v =>
-            wordsInQuery.Any(part => v.RegNumber.Equals(part.Trim())) ||
-            wordsInQuery.Any(part => v.Color.Equals(part.Trim())) ||
-            wordsInQuery.Any(part => v.Brand.Equals(part.Trim())));
+            if (!string.IsNullOrEmpty(regNumber))
+            {
+                query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
+            }
+
+            if (!string.IsNullOrEmpty(color))
+            {
+                query = query.Where(v => v.Color.Equals(color.Trim()));
+            }
+
+            if (!string.IsNullOrEmpty(brand))
+            {
+                query = query.Where(v => v.Brand.Equals(brand.Trim()));
+            }
 
             var search = await query
                         .Select(v => new VehicleViewModel
