@@ -69,7 +69,7 @@ namespace Assignment12_Garage.Controllers
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.Id); 
+                    vehicles = vehicles.OrderBy(v => v.Id);
                     break;
             }
 
@@ -85,8 +85,6 @@ namespace Assignment12_Garage.Controllers
             return View("Index", sortedVehicles);
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
@@ -94,27 +92,27 @@ namespace Assignment12_Garage.Controllers
             ViewBag.AvailableSpaces = availableSpaces;
 
             if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
-                {
-                    TempData["SearchFail"] = "Please provide input for at least one search criteria.";
-                    return RedirectToAction("Index");
-                }
+            {
+                TempData["SearchFail"] = "Please provide input for at least one search criteria.";
+                return RedirectToAction("Index");
+            }
 
-                var query = _context.Vehicle.AsQueryable();
+            var query = _context.Vehicle.AsQueryable();
 
-                if (!string.IsNullOrEmpty(regNumber))
-                {
-                    query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
-                }
+            if (!string.IsNullOrEmpty(regNumber))
+            {
+                query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
+            }
 
-                if (!string.IsNullOrEmpty(color))
-                {
-                    query = query.Where(v => v.Color.Equals(color.Trim()));
-                }
+            if (!string.IsNullOrEmpty(color))
+            {
+                query = query.Where(v => v.Color.Equals(color.Trim()));
+            }
 
-                if (!string.IsNullOrEmpty(brand))
-                {
-                    query = query.Where(v => v.Brand.Equals(brand.Trim()));
-                }
+            if (!string.IsNullOrEmpty(brand))
+            {
+                query = query.Where(v => v.Brand.Equals(brand.Trim()));
+            }
 
             var search = await query
                         .Select(v => new VehicleViewModel
@@ -187,6 +185,20 @@ namespace Assignment12_Garage.Controllers
                     RegNumber = v.RegNumber,
                     ArrivalDate = v.ArrivalDate
                 }).ToListAsync();
+            
+            double totalRevenue = 0;
+            for ( var i = 0; i < vehicles.Count; i++)
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
+
+                receipt.ArrivalDate = vehicles[i].ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+                totalRevenue = totalRevenue + receipt.Price;
+            }
+            string formattedRevenue = totalRevenue.ToString("#,##0.00");
+            TempData["TotalRevenue"] = $"{formattedRevenue}";
 
             return View(vehicles);
         }
@@ -228,8 +240,21 @@ namespace Assignment12_Garage.Controllers
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
-            return View(vehicle);
+                //receipt.Id = vehicle.Id;
+                //receipt.RegNumber = vehicle.RegNumber;
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price;
+                TempData["Price"] = $"{price}";
+                return View(vehicle);
+            }
         }
 
         // GET: Vehicles/Create
@@ -256,7 +281,7 @@ namespace Assignment12_Garage.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
+                if (_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
                 {
                     ModelState.AddModelError("RegNumber", "A vehicle with this registration number already exists.");
                     return View(vehicle);
@@ -359,9 +384,20 @@ namespace Assignment12_Garage.Controllers
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
-            TempData["Message"] = "Vehicle is updated";
-            return View(vehicle);
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price;
+                TempData["Price"] = $"{price}";
+                TempData["Message"] = "Vehicle is updated";
+                return View(vehicle);
+            }
         }
 
         // POST: Vehicles/Delete/5
