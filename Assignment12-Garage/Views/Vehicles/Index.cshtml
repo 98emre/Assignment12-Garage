@@ -10,6 +10,9 @@
 <div>
     <h5>Available Parking Spaces: @ViewBag.AvailableSpaces</h5>
 </div>
+<div>
+    <h5>Est Total Revenue: @TempData["TotalRevenue"] kr</h5>
+</div>
 
 
 @if(TempData.ContainsKey("SearchFail")){
@@ -86,7 +89,13 @@
 
 <form asp-action="Filter" method="get" class="form-inline m-3">
     <div class="form-group mr-2">
-        <input type="text" class="form-control" name="searchQuery" placeholder="Search...">
+        <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="color" placeholder="Search by color">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="brand" placeholder="Search by brand">
     </div>
     <br />
     <span>|</span>

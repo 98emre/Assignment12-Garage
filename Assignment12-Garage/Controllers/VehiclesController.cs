@@ -85,8 +85,6 @@ namespace Assignment12_Garage.Controllers
             return View("Index", sortedVehicles);
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
@@ -187,6 +185,20 @@ namespace Assignment12_Garage.Controllers
                     RegNumber = v.RegNumber,
                     ArrivalDate = v.ArrivalDate
                 }).ToListAsync();
+            
+            double totalRevenue = 0;
+            for ( var i = 0; i < vehicles.Count; i++)
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
+
+                receipt.ArrivalDate = vehicles[i].ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+                totalRevenue = totalRevenue + receipt.Price;
+            }
+            string formattedRevenue = totalRevenue.ToString("#,##0.00");
+            TempData["TotalRevenue"] = $"{formattedRevenue}";
 
             return View(vehicles);
         }
