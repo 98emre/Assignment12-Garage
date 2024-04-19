@@ -17,10 +17,42 @@ namespace Assignment12_Garage.Controllers
     {
         private readonly Assignment12_GarageContext _context;
         private const int MaxParkingSpaces = 25;
+        private List<string> ParkingSpots;
 
         public VehiclesController(Assignment12_GarageContext context)
         {
             _context = context;
+
+            ParkingSpots = new List<string>();
+            var parkedVehicles = _context.Vehicle.Select(v => v.ParkingSpot).ToList();
+
+            for (int i = 1; i <= MaxParkingSpaces; i++)
+            {
+                if(parkedVehicles.Contains(i.ToString()))
+                {
+                    ParkingSpots.Add(i.ToString());
+                }
+
+                else
+                {
+                    ParkingSpots.Add(null);
+                }
+            }
+        }
+
+        private string FindParkingSpot()
+        {
+            for (int i = 0; i < ParkingSpots.Count; i++)
+            {
+                if (ParkingSpots[i] == null)
+                {
+                    int parkingSpotNumber = i + 1;
+                    ParkingSpots[i] = parkingSpotNumber.ToString();
+                    return ParkingSpots[i];
+                }
+            }
+
+            return null;
         }
 
         [HttpGet]
@@ -79,7 +111,8 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             return View("Index", sortedVehicles);
@@ -120,7 +153,8 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             if (search.Count == 0)
@@ -149,7 +183,8 @@ namespace Assignment12_Garage.Controllers
                           Id = v.Id,
                           VehicleType = v.VehicleType,
                           RegNumber = v.RegNumber,
-                          ArrivalDate = v.ArrivalDate
+                          ArrivalDate = v.ArrivalDate,
+                          ParkingSpot = v.ParkingSpot
                       }).ToListAsync();
 
             if (search.Count == 0)
@@ -183,7 +218,8 @@ namespace Assignment12_Garage.Controllers
                     Id = v.Id,
                     VehicleType = v.VehicleType,
                     RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate
+                    ArrivalDate = v.ArrivalDate,
+                    ParkingSpot = v.ParkingSpot
                 }).ToListAsync();
             
             double totalRevenue = 0;
@@ -220,7 +256,8 @@ namespace Assignment12_Garage.Controllers
                     Id = v.Id,
                     VehicleType = v.VehicleType,
                     RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate
+                    ArrivalDate = v.ArrivalDate,
+                    ParkingSpot = v.ParkingSpot
                 }).ToListAsync();
 
             return View(vehicles);
@@ -295,9 +332,9 @@ namespace Assignment12_Garage.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                string parking = (totalVehicles + 1).ToString();
+                string parkingSpot = FindParkingSpot();
 
-                vehicle.ParkingSpot = parking;
+                vehicle.ParkingSpot = parkingSpot;
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
@@ -411,6 +448,9 @@ namespace Assignment12_Garage.Controllers
 
             if (vehicle != null)
             {
+                var spotNumber = vehicle.ParkingSpot;
+                ParkingSpots[int.Parse(spotNumber) - 1] = null;
+
                 _context.Vehicle.Remove(vehicle);
             }
 

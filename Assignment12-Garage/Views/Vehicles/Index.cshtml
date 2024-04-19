@@ -50,11 +50,10 @@
                             <a asp-action="Sort" asp-route-sortOrder="arrivalDate" class="text-black">Arrival Date</a>
                         </th>
 
-                            <th>
-                               
-                                    <h5>Available Parking Spaces: @ViewBag.AvailableSpaces</h5>
-                   
-                            </th>
+                        <th class="px-6 py-4 text-left font-weight-bold">
+                            Parking Spot
+                        </th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -70,6 +69,11 @@
                             <td class="px-6 py-3">
                                 @Html.DisplayFor(modelItem => item.ArrivalDate)
                             </td>
+
+                            <td class="px-6 py-3">
+                                 @Html.DisplayFor(modelItem => item.ParkingSpot)
+                            </td>
+                     
                             <td class="px-6 py-3">
                                 <a class="btn-sm btn-warning p-1 text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                                 <a class="btn-sm btn-success p-1 text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
