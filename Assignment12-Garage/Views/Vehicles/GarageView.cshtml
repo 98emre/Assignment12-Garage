@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Assignment12_Garage.Models.ViewModels.VehicleViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">VehicleType: @Html.DisplayFor(modelItem => item.VehicleType)</h5>
+                    <p class="card-text">Registration Number: @Html.DisplayFor(modelItem => item.RegNumber)</p>
+                    <p class="card-text">Arrival Date: @Html.DisplayFor(modelItem => item.ArrivalDate)</p>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Checkout</a>
+                </div>
+            </div>
+        </div>
+    }
+    @for (int i = 1; i < ViewBag.AvailableSpaces; i++)
+    {
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Parking Spot: @(i)</h5>
+                    <p class="card-text">Empty Parking Spot</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (ViewBag.AvailableSpaces > 0)
+{
+    <a asp-action="Create" class="btn btn-primary">Check In</a>
+}
+else
+{
+    <span class="btn btn-primary disabled">Check In not available</span>
+}
+
+<a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
+
+<form asp-action="Filter" method="get" class="form-inline m-3 d-flex flex-column align-items-center">
+    <p>Choose 1-3 attributes on your Vehicle:</p>
+    <div class="d-flex flex-row justify-content-center">
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" name="regNumber" placeholder="Search by reg.number">
+        </div>
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" name="color" placeholder="Search by color">
+        </div>
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" name="brand" placeholder="Search by brand">
+        </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-secondary">Search</button>
+</form>

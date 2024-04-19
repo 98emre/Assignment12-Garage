@@ -191,6 +191,29 @@ namespace Assignment12_Garage.Controllers
             return View(vehicles);
         }
 
+        public async Task<IActionResult> GarageView()
+        {
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
+
+
+            if (TempData.ContainsKey("Message"))
+            {
+                ViewBag.Message = TempData["Message"];
+            }
+
+            var vehicles = await _context.Vehicle
+                .Select(v => new VehicleViewModel
+                {
+                    Id = v.Id,
+                    VehicleType = v.VehicleType,
+                    RegNumber = v.RegNumber,
+                    ArrivalDate = v.ArrivalDate
+                }).ToListAsync();
+
+            return View(vehicles);
+        }
+
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
