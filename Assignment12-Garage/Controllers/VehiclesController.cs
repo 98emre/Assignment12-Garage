@@ -112,6 +112,9 @@ namespace Assignment12_Garage.Controllers
                 case "arrivalDate":
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
+                case "parkingSpot":
+                    vehicles = vehicles.OrderBy(v => v.ParkingSpot);
+                    break;
                 default:
                     vehicles = vehicles.OrderBy(v => v.Id);
                     break;
