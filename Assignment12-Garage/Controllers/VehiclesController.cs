@@ -221,7 +221,6 @@ namespace Assignment12_Garage.Controllers
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
-
             if (TempData.ContainsKey("Message"))
             {
                 ViewBag.Message = TempData["Message"];
@@ -240,29 +239,46 @@ namespace Assignment12_Garage.Controllers
             return View(vehicles);
         }
 
-        public async Task<IActionResult> GarageView()
+        public IActionResult GarageView()
         {
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
 
-            if (TempData.ContainsKey("Message"))
+            var vehicleList = new List<VehicleViewModel>();
+            int index = 0;
+
+            foreach (var spot in ParkingSpots)
             {
-                ViewBag.Message = TempData["Message"];
+                
+              index++;
+
+               var vehicleOnSpot = _context.Vehicle.ToList().FirstOrDefault(v => v.ParkingSpot == spot);
+                
+                if (vehicleOnSpot != null)
+                {
+                  vehicleList.Add(new VehicleViewModel
+                  {
+                      Id = vehicleOnSpot.Id,
+                      VehicleType = vehicleOnSpot.VehicleType,
+                      RegNumber = vehicleOnSpot.RegNumber,
+                      ArrivalDate = vehicleOnSpot.ArrivalDate,
+                      ParkingSpot = vehicleOnSpot.ParkingSpot
+                  });
+                }
+                
+                else
+                {
+                    vehicleList.Add(new VehicleViewModel
+                    {
+                        ParkingSpot = index.ToString()
+                      });
+                }              
             }
 
-            var vehicles = await _context.Vehicle
-                .Select(v => new VehicleViewModel
-                {
-                    Id = v.Id,
-                    VehicleType = v.VehicleType,
-                    RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate,
-                    ParkingSpot = v.ParkingSpot
-                }).ToListAsync();
-
-            return View(vehicles);
+            return View(vehicleList);
         }
+
 
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
