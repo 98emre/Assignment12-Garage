@@ -247,7 +247,9 @@ namespace Assignment12_Garage.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+                string parking = (totalVehicles + 1).ToString();
 
+                vehicle.ParkingSpot = parking;
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();

@@ -32,6 +32,6 @@ namespace Assignment12_Garage.Models
         public DateTime ArrivalDate { get; set; }
 
         [Column("ParkingSpot")]
-        public string ParkingSpot { get; set; }
+        public string? ParkingSpot { get; set; }
     }
 }

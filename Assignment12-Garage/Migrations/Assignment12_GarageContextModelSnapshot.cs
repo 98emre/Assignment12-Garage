@@ -30,6 +30,9 @@ namespace Assignment12_Garage.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ParkingSpot")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("ArrivalDate")
                         .HasColumnType("datetime2");
 
