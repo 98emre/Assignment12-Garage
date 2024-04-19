@@ -40,9 +40,21 @@ namespace Assignment12_Garage.Controllers
                 vehicleTypeCount[vehicle.VehicleType]++;
             }
 
-
             var totalWheels = parkedVehicles.Sum(v => v.NrOfWheels);
 
+            double totalRevenue = 0;
+            for (var i = 0; i < parkedVehicles.Count; i++)
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
+
+                receipt.ArrivalDate = parkedVehicles[i].ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+                totalRevenue = totalRevenue + receipt.Price;
+            }
+
+            ViewBag.TotalRevenue = totalRevenue.ToString("#,##0.00");
             ViewBag.VehicleType = vehicleTypeCount;
             ViewBag.TotalWheels = totalWheels;
 
@@ -185,20 +197,6 @@ namespace Assignment12_Garage.Controllers
                     RegNumber = v.RegNumber,
                     ArrivalDate = v.ArrivalDate
                 }).ToListAsync();
-            
-            double totalRevenue = 0;
-            for ( var i = 0; i < vehicles.Count; i++)
-            {
-                ReceiptViewModel receipt = new ReceiptViewModel();
-
-                receipt.ArrivalDate = vehicles[i].ArrivalDate;
-                receipt.CheckoutDate = DateTime.Now;
-                receipt.CalculateTotalParkingHours();
-                receipt.CalculatePrice();
-                totalRevenue = totalRevenue + receipt.Price;
-            }
-            string formattedRevenue = totalRevenue.ToString("#,##0.00");
-            TempData["TotalRevenue"] = $"{formattedRevenue}";
 
             return View(vehicles);
         }
@@ -244,14 +242,12 @@ namespace Assignment12_Garage.Controllers
             {
                 ReceiptViewModel receipt = new ReceiptViewModel();
 
-                //receipt.Id = vehicle.Id;
-                //receipt.RegNumber = vehicle.RegNumber;
                 receipt.ArrivalDate = vehicle.ArrivalDate;
                 receipt.CheckoutDate = DateTime.Now;
                 receipt.CalculateTotalParkingHours();
                 receipt.CalculatePrice();
 
-                var price = receipt.Price;
+                var price = receipt.Price.ToString("#,##0.00"); ;
                 TempData["Price"] = $"{price}";
                 return View(vehicle);
             }
@@ -393,7 +389,7 @@ namespace Assignment12_Garage.Controllers
                 receipt.CalculateTotalParkingHours();
                 receipt.CalculatePrice();
 
-                var price = receipt.Price;
+                var price = receipt.Price.ToString("#,##0.00"); ;
                 TempData["Price"] = $"{price}";
                 TempData["Message"] = "Vehicle is updated";
                 return View(vehicle);
