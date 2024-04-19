@@ -8,6 +8,14 @@
 <h1 class="p-1">Garage</h1>
 </div>
 
+<h1 class="d-flex justify-content-center">Garage</h1>
+
+
+<div>
+    <h5>Available Parking Spaces: @ViewBag.AvailableSpaces</h5>
+</div>
+
+
 @if(TempData.ContainsKey("SearchFail")){
     <div class="alert alert-warning" role="alert">
         @TempData["SearchFail"]
@@ -95,4 +103,55 @@
     </div>
 </div>
 
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArrivalDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+    @if (ViewBag.AvailableSpaces > 0)
+    {
+        <a asp-action="Create" class="btn btn-primary">Check In</a>
+    }
+    else
+    {
+        <span class="btn btn-primary disabled">Check In not available</span>
+    }
+
+<a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
+
+<form asp-action="Filter" method="get" class="form-inline m-3">
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="color" placeholder="Search by color">
+    </div>
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="brand" placeholder="Search by brand">
+    </div>
+    <br />
+    <span>|</span>
+    <button type="submit" class="btn btn-secondary">Search</button>
+    <span>|</span>
+</form>
 
