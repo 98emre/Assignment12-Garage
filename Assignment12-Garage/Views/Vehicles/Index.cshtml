@@ -6,6 +6,12 @@
 
 <h1 class="d-flex justify-content-center">Garage</h1>
 
+
+<div>
+    <h5>Available Parking Spaces: @ViewBag.AvailableSpaces</h5>
+</div>
+
+
 @if(TempData.ContainsKey("SearchFail")){
     <div class="alert alert-warning" role="alert">
         @TempData["SearchFail"]
@@ -25,9 +31,6 @@
         @ViewBag.Message
     </div>
 }
-
-
-
 
 
 <table class="table table-responsive">
@@ -69,8 +72,18 @@
 }
     </tbody>
 </table>
-<a asp-action="Create" class="btn btn-primary">Check In</a>
+
+    @if (ViewBag.AvailableSpaces > 0)
+    {
+        <a asp-action="Create" class="btn btn-primary">Check In</a>
+    }
+    else
+    {
+        <span class="btn btn-primary disabled">Check In not available</span>
+    }
+
 <a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
+
 <form asp-action="Filter" method="get" class="form-inline m-3">
     <div class="form-group mr-2">
         <input type="text" class="form-control" name="searchQuery" placeholder="Search...">
@@ -80,3 +93,5 @@
     <button type="submit" class="btn btn-secondary">Search</button>
     <span>|</span>
 </form>
+
+<a asp-action="Statistics" class="btn btn-success">Statistics</a>
