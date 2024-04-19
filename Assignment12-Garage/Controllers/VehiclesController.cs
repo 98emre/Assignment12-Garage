@@ -150,14 +150,27 @@ namespace Assignment12_Garage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(m => m.Id == id);
+
             if (vehicle == null)
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
-            return View(vehicle);
+                //receipt.Id = vehicle.Id;
+                //receipt.RegNumber = vehicle.RegNumber;
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price;
+                TempData["Price"] = $"{price}";
+                return View(vehicle);
+            }
         }
 
         // GET: Vehicles/Create
@@ -266,9 +279,20 @@ namespace Assignment12_Garage.Controllers
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
-            TempData["Message"] = "Vehicle is updated";
-            return View(vehicle);
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price;
+                TempData["Price"] = $"{price}";
+                TempData["Message"] = "Vehicle is updated";
+                return View(vehicle);
+            }
         }
 
         // POST: Vehicles/Delete/5
