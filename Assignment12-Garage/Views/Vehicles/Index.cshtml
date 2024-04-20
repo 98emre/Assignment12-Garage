@@ -4,7 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1 class="d-flex justify-content-center">Garage</h1>
+<div class="d-flex flex-row justify-content-center">
+    <img class="p-1" src="/images/warehouse-solid (1).svg" width="50px" height="50px" alt="Alternate Text" />
+    <h1 class="p-1">Garage</h1>
+</div>
 
 @if(TempData.ContainsKey("SearchFail")){
     <div class="alert alert-warning" role="alert">
@@ -30,62 +33,86 @@
     </div>
 }
 
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 py-4">
+            <div class="border border-5 border-dark rounded-3 overflow-hidden shadow-lg">
+                <table class="table">
+                    <thead class="bg-primary">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-weight-bold">
+                                <a asp-action="Sort" asp-route-sortOrder="vehicleType" class="text-black">Vehicle Type</a>
+                        </th>
 
-<table class="table table-responsive">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Sort" asp-route-sortOrder="vehicleType">Vehicle Type</a>
-            </th>
+                        <th class="px-6 py-4 text-left font-weight-bold">
+                                <a asp-action="Sort" asp-route-sortOrder="regNumber" class="text-black">Registration Number</a>
+                        </th>
 
-            <th>
-                <a asp-action="Sort" asp-route-sortOrder="regNumber">Registration Number</a>
-            </th>
+                        <th class="px-6 py-4 text-left font-weight-bold">
+                            <a asp-action="Sort" asp-route-sortOrder="arrivalDate" class="text-black">Arrival Date</a>
+                        </th>
+                     
+                        <th class="px-6 py-4 text-left font-weight-bold d-flex">
+                             <a asp-action="Sort" asp-route-sortOrder="parkingSpot" class="text-black">Parking Spot</a>
+                        </th>
+                        
+                        
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="px-6 py-4">
+                                @Html.DisplayFor(modelItem => item.VehicleType)
+                            </td>
 
-            <th>
-               <a asp-action="Sort" asp-route-sortOrder="arrivalDate">Arrival Date</a>
-            </th>
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.RegNumber)
+                            </td>
+                        
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.ArrivalDate)
+                            </td>
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArrivalDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-<a asp-action="Create" class="btn btn-primary">Check In</a>
-<a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
-<form asp-action="Filter" method="get" class="form-inline m-3">
-    <div class="form-group mr-2">
-        <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.ParkingSpot)
+                            </td>
+                            
+                                <td class="px-6 py-4">
+                                    <div class="d-flex">
+                                        <a class="btn-sm btn-warning p-1 text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                        <span style="background-color: black; margin: 0 4px;">|</span>
+                                        <a class="btn-sm btn-success p-1 text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                        <span style="background-color: black; margin: 0 4px;">|</span>
+                                        <a class="btn-sm btn-danger p-1 text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
+                                    </div>
+                                </td>
+                         </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-3">
+                <a asp-action="Create" class="btn btn-primary">Check In</a>
+                <a asp-action="ShowAll" class="btn btn-info ml-2">Show All Vehicles</a>
+            </div>
+         
+            <form asp-action="Filter" method="get" class="form-inline m-3 d-flex flex-column">
+                <div class="form-group mr-2">
+                    <input type="text" class="form-control" name="regNumber" placeholder="Search by registration number">
+                </div>
+                <div class="form-group mr-2">
+                    <input type="text" class="form-control" name="color" placeholder="Search by color">
+                </div>
+                <div class="form-group mr-2">
+                    <input type="text" class="form-control" name="brand" placeholder="Search by brand">
+                </div>
+                <br />
+                <button type="submit" class="btn btn-secondary mx-5">Search</button>
+            </form>
+        </div>
     </div>
-    <div class="form-group mr-2">
-        <input type="text" class="form-control" name="color" placeholder="Search by color">
-    </div>
-    <div class="form-group mr-2">
-        <input type="text" class="form-control" name="brand" placeholder="Search by brand">
-    </div>
-    <br />
-    <span>|</span>
-    <button type="submit" class="btn btn-secondary">Search</button>
-    <span>|</span>
-</form>
+</div>
 
-<a asp-action="Statistics" class="btn btn-success">Statistics</a>

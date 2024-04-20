@@ -9,6 +9,9 @@
 <div>
     <h4>Vehicle</h4>
     <hr />
+    @{
+        <h5>Est Current Price: @TempData["Price"] kr</h5>
+    }
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.VehicleType)
@@ -51,6 +54,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ArrivalDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ParkingSpot)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ParkingSpot)
         </dd>
     </dl>
 </div>

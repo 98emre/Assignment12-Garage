@@ -30,6 +30,9 @@ namespace Assignment12_Garage.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ParkingSpot")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("ArrivalDate")
                         .HasColumnType("datetime2");
 
@@ -58,64 +61,7 @@ namespace Assignment12_Garage.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vehicle");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArrivalDate = new DateTime(2023, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Brand = "Stenaline",
-                            Color = "Blue",
-                            NrOfWheels = 0,
-                            RegNumber = "ABC123",
-                            VehicleModel = "JokeBoat",
-                            VehicleType = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArrivalDate = new DateTime(2003, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Brand = "Aston Martin",
-                            Color = "Yellow",
-                            NrOfWheels = 4,
-                            RegNumber = "BRUM",
-                            VehicleModel = "BRUM",
-                            VehicleType = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ArrivalDate = new DateTime(2023, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Brand = "Boeing",
-                            Color = "White",
-                            NrOfWheels = 6,
-                            RegNumber = "1800FLY",
-                            VehicleModel = "OSAIsJustASuggestion",
-                            VehicleType = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ArrivalDate = new DateTime(2013, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Brand = "Volvo",
-                            Color = "Deep Blue",
-                            NrOfWheels = 6,
-                            RegNumber = "VTF696",
-                            VehicleModel = "Long Boy",
-                            VehicleType = 3
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ArrivalDate = new DateTime(2001, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Brand = "Ford",
-                            Color = "Purple",
-                            NrOfWheels = 4,
-                            RegNumber = "424242",
-                            VehicleModel = "Fiesta",
-                            VehicleType = 0
-                        });
+                    b.ToTable("Vehicle", (string)null);
                 });
 #pragma warning restore 612, 618
         }

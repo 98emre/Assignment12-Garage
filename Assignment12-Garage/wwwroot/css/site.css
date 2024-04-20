@@ -1,10 +1,12 @@
 html {
     font-size: 14px;
+    margin-bottom: 0px;
 }
 body {
     font-family: "DM Serif Display", serif;
     font-weight: 400;
     font-style: normal;
+
 }
 
 @media (min-width: 768px) {
@@ -23,5 +25,5 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    margin-bottom: 0px;
 }

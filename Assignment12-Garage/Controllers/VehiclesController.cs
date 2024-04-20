@@ -16,10 +16,43 @@ namespace Assignment12_Garage.Controllers
     public class VehiclesController : Controller
     {
         private readonly Assignment12_GarageContext _context;
+        private const int MaxParkingSpaces = 25;
+        private List<string> ParkingSpots;
 
         public VehiclesController(Assignment12_GarageContext context)
         {
             _context = context;
+
+            ParkingSpots = new List<string>();
+            var parkedVehicles = _context.Vehicle.Select(v => v.ParkingSpot).ToList();
+
+            for (int i = 1; i <= MaxParkingSpaces; i++)
+            {
+                if(parkedVehicles.Contains(i.ToString()))
+                {
+                    ParkingSpots.Add(i.ToString());
+                }
+
+                else
+                {
+                    ParkingSpots.Add(null);
+                }
+            }
+        }
+
+        private string FindParkingSpot()
+        {
+            for (int i = 0; i < ParkingSpots.Count; i++)
+            {
+                if (ParkingSpots[i] == null)
+                {
+                    int parkingSpotNumber = i + 1;
+                    ParkingSpots[i] = parkingSpotNumber.ToString();
+                    return ParkingSpots[i];
+                }
+            }
+
+            return null;
         }
 
         [HttpGet]
@@ -39,9 +72,21 @@ namespace Assignment12_Garage.Controllers
                 vehicleTypeCount[vehicle.VehicleType]++;
             }
 
-
             var totalWheels = parkedVehicles.Sum(v => v.NrOfWheels);
 
+            double totalRevenue = 0;
+            for (var i = 0; i < parkedVehicles.Count; i++)
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
+
+                receipt.ArrivalDate = parkedVehicles[i].ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+                totalRevenue = totalRevenue + receipt.Price;
+            }
+
+            ViewBag.TotalRevenue = totalRevenue.ToString("#,##0.00");
             ViewBag.VehicleType = vehicleTypeCount;
             ViewBag.TotalWheels = totalWheels;
 
@@ -51,6 +96,9 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> Sort(string sortOrder)
         {
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
+
             var vehicles = _context.Vehicle.AsQueryable();
 
             switch (sortOrder)
@@ -64,8 +112,11 @@ namespace Assignment12_Garage.Controllers
                 case "arrivalDate":
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
+                case "parkingSpot":
+                    vehicles = vehicles.OrderBy(v => v.ParkingSpot);
+                    break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.Id); 
+                    vehicles = vehicles.OrderBy(v => v.Id);
                     break;
             }
 
@@ -75,39 +126,41 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             return View("Index", sortedVehicles);
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
-                if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
-                {
-                    TempData["SearchFail"] = "Please provide input for at least one search criteria.";
-                    return RedirectToAction("Index");
-                }
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
 
-                var query = _context.Vehicle.AsQueryable();
+            if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
+            {
+                TempData["SearchFail"] = "Please provide input for at least one search criteria.";
+                return RedirectToAction("Index");
+            }
 
-                if (!string.IsNullOrEmpty(regNumber))
-                {
-                    query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
-                }
+            var query = _context.Vehicle.AsQueryable();
 
-                if (!string.IsNullOrEmpty(color))
-                {
-                    query = query.Where(v => v.Color.Equals(color.Trim()));
-                }
+            if (!string.IsNullOrEmpty(regNumber))
+            {
+                query = query.Where(v => v.RegNumber.Equals(regNumber.ToUpper().Trim()));
+            }
 
-                if (!string.IsNullOrEmpty(brand))
-                {
-                    query = query.Where(v => v.Brand.Equals(brand.Trim()));
-                }
+            if (!string.IsNullOrEmpty(color))
+            {
+                query = query.Where(v => v.Color.Equals(color.Trim()));
+            }
+
+            if (!string.IsNullOrEmpty(brand))
+            {
+                query = query.Where(v => v.Brand.Equals(brand.Trim()));
+            }
 
             var search = await query
                         .Select(v => new VehicleViewModel
@@ -115,7 +168,8 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             if (search.Count == 0)
@@ -134,6 +188,9 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowAll()
         {
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
+
             var query = _context.Vehicle.AsQueryable();
             var search = await query
                       .Select(v => new VehicleViewModel
@@ -141,7 +198,8 @@ namespace Assignment12_Garage.Controllers
                           Id = v.Id,
                           VehicleType = v.VehicleType,
                           RegNumber = v.RegNumber,
-                          ArrivalDate = v.ArrivalDate
+                          ArrivalDate = v.ArrivalDate,
+                          ParkingSpot = v.ParkingSpot
                       }).ToListAsync();
 
             if (search.Count == 0)
@@ -160,6 +218,9 @@ namespace Assignment12_Garage.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
+
             if (TempData.ContainsKey("Message"))
             {
                 ViewBag.Message = TempData["Message"];
@@ -179,11 +240,53 @@ namespace Assignment12_Garage.Controllers
                     Id = v.Id,
                     VehicleType = v.VehicleType,
                     RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate
+                    ArrivalDate = v.ArrivalDate,
+                    ParkingSpot = v.ParkingSpot
                 }).ToListAsync();
 
             return View(vehicles);
         }
+
+        public IActionResult GarageView()
+        {
+            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            ViewBag.AvailableSpaces = availableSpaces;
+
+
+            var vehicleList = new List<VehicleViewModel>();
+            int index = 0;
+
+            foreach (var spot in ParkingSpots)
+            {
+                
+              index++;
+
+               var vehicleOnSpot = _context.Vehicle.ToList().FirstOrDefault(v => v.ParkingSpot == spot);
+                
+                if (vehicleOnSpot != null)
+                {
+                  vehicleList.Add(new VehicleViewModel
+                  {
+                      Id = vehicleOnSpot.Id,
+                      VehicleType = vehicleOnSpot.VehicleType,
+                      RegNumber = vehicleOnSpot.RegNumber,
+                      ArrivalDate = vehicleOnSpot.ArrivalDate,
+                      ParkingSpot = vehicleOnSpot.ParkingSpot
+                  });
+                }
+                
+                else
+                {
+                    vehicleList.Add(new VehicleViewModel
+                    {
+                        ParkingSpot = index.ToString()
+                      });
+                }              
+            }
+
+            return View(vehicleList);
+        }
+
 
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -193,19 +296,39 @@ namespace Assignment12_Garage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(m => m.Id == id);
+
             if (vehicle == null)
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
-            return View(vehicle);
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price.ToString("#,##0.00"); ;
+                TempData["Price"] = $"{price}";
+                return View(vehicle);
+            }
         }
 
         // GET: Vehicles/Create
+        [HttpGet]
         public IActionResult Create()
         {
+            int totalVehicles = _context.Vehicle.Count();
+
+            if (totalVehicles >= MaxParkingSpaces)
+            {
+                TempData["Message"] = "Parking is full. Cannot check in new vehicle.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View();
         }
 
@@ -218,11 +341,23 @@ namespace Assignment12_Garage.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
+                if (_context.Vehicle.Any(v => v.RegNumber == vehicle.RegNumber))
                 {
                     ModelState.AddModelError("RegNumber", "A vehicle with this registration number already exists.");
                     return View(vehicle);
                 }
+
+                int totalVehicles = _context.Vehicle.Count();
+
+                if (totalVehicles >= MaxParkingSpaces)
+                {
+                    TempData["Message"] = "Parking is full. Cannot check in new vehicle.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                string parkingSpot = FindParkingSpot();
+
+                vehicle.ParkingSpot = parkingSpot;
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
@@ -230,6 +365,7 @@ namespace Assignment12_Garage.Controllers
                 TempData["Message"] = "Vehicle is checked in";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(vehicle);
         }
 
@@ -296,6 +432,7 @@ namespace Assignment12_Garage.Controllers
         }
 
         // GET: Vehicles/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -309,9 +446,21 @@ namespace Assignment12_Garage.Controllers
             {
                 return NotFound();
             }
+            else
+            {
+                ReceiptViewModel receipt = new ReceiptViewModel();
 
+                receipt.ArrivalDate = vehicle.ArrivalDate;
+                receipt.CheckoutDate = DateTime.Now;
+                receipt.CalculateTotalParkingHours();
+                receipt.CalculatePrice();
+
+                var price = receipt.Price.ToString("#,##0.00"); ;
+                TempData["Price"] = $"{price}";
+                TempData["Message"] = "Vehicle is updated";
+                return View(vehicle);
+            }
             TempData["DeletedVehicleId"] = id;
-            TempData["Message"] = "Vehicle is updated";
             return View(vehicle);
         }
 
@@ -321,8 +470,12 @@ namespace Assignment12_Garage.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicle = await _context.Vehicle.FindAsync(id);
+
             if (vehicle != null)
             {
+                var spotNumber = vehicle.ParkingSpot;
+                ParkingSpots[int.Parse(spotNumber) - 1] = null;
+
                 _context.Vehicle.Remove(vehicle);
                 await _context.SaveChangesAsync();
 
