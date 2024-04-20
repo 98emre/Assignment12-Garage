@@ -23,6 +23,10 @@
 {
     <div class="alert alert-success" role="alert">
         @ViewBag.Message
+        @if (ViewBag.VehicleCheckedOut != null && (bool)ViewBag.VehicleCheckedOut)
+        {
+            <a asp-action="Receipt" asp-controller="Vehicles">View Receipt</a>
+        }
     </div>
 }
 

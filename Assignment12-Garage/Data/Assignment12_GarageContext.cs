@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Assignment12_Garage.Models;
+using Assignment12_Garage.Models.ViewModels;
 
 namespace Assignment12_Garage.Data
 {
@@ -28,5 +29,6 @@ namespace Assignment12_Garage.Data
                 new Vehicle { Id = 5, VehicleType = VehicleType.Car, RegNumber = "424242", Color = "Purple", Brand = "Ford", VehicleModel = "Fiesta", NrOfWheels = 4, ArrivalDate = DateTime.Parse("2001-01-05") }
                 );
         }
+        public DbSet<ReceiptViewModel> ReceiptViewModel { get; set; } = default!;
     }
 }

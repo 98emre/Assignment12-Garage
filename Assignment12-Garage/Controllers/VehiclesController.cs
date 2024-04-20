@@ -164,6 +164,14 @@ namespace Assignment12_Garage.Controllers
             {
                 ViewBag.Message = TempData["Message"];
             }
+            if (TempData.ContainsKey("VehicleCheckedOut"))
+            {
+                ViewBag.VehicleCheckedOut = TempData["VehicleCheckedOut"];
+            }
+            else
+            {
+                ViewBag.VehicleCheckedOut = false;
+            }
 
             var vehicles = await _context.Vehicle
                 .Select(v => new VehicleViewModel
@@ -302,6 +310,7 @@ namespace Assignment12_Garage.Controllers
                 return NotFound();
             }
 
+            TempData["DeletedVehicleId"] = id;
             TempData["Message"] = "Vehicle is updated";
             return View(vehicle);
         }
@@ -315,13 +324,28 @@ namespace Assignment12_Garage.Controllers
             if (vehicle != null)
             {
                 _context.Vehicle.Remove(vehicle);
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = "Vehicle is checked out";
+                TempData["VehicleCheckedOut"] = true;
             }
 
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Vehicle is checked out";
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Receipt()
+        {
+            if (!TempData.ContainsKey("DeletedVehicleId"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            int id = (int)TempData["DeletedVehicleId"];
+            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(m => m.Id == id);
+
+            return View(vehicle);
+        }
+
 
         private bool VehicleExists(int id)
         {
