@@ -450,18 +450,21 @@ namespace Assignment12_Garage.Controllers
             {
                 ReceiptViewModel receipt = new ReceiptViewModel();
 
+
+                receipt.RegNumber = vehicle.RegNumber;
                 receipt.ArrivalDate = vehicle.ArrivalDate;
                 receipt.CheckoutDate = DateTime.Now;
                 receipt.CalculateTotalParkingHours();
                 receipt.CalculatePrice();
 
-                var price = receipt.Price.ToString("#,##0.00"); ;
-                TempData["Price"] = $"{price}";
+                string receiptString = $"{receipt.RegNumber},{receipt.ArrivalDate},{receipt.CheckoutDate},{receipt.TotalParkingHours},{receipt.Price}";
+                TempData["ReceiptString"] = receiptString;
+                TempData["Price"] = receipt.Price.ToString("#,##0.00");
                 TempData["Message"] = "Vehicle is updated";
+
                 return View(vehicle);
+
             }
-            TempData["DeletedVehicleId"] = id;
-            return View(vehicle);
         }
 
         // POST: Vehicles/Delete/5
@@ -486,17 +489,27 @@ namespace Assignment12_Garage.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Receipt()
+        public IActionResult Receipt()
         {
-            if (!TempData.ContainsKey("DeletedVehicleId"))
+            string receiptString = TempData["ReceiptString"] as string;
+
+            if (string.IsNullOrEmpty(receiptString))
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
-            int id = (int)TempData["DeletedVehicleId"];
-            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(m => m.Id == id);
+            string[] receiptDetails = receiptString.Split(',');
 
-            return View(vehicle);
+            var receiptViewModel = new ReceiptViewModel
+            {
+                RegNumber = receiptDetails[0],
+                ArrivalDate = DateTime.Parse(receiptDetails[1]), 
+                CheckoutDate = DateTime.Parse(receiptDetails[2]), 
+                TotalParkingHours = int.Parse(receiptDetails[3]),
+                Price = double.Parse(receiptDetails[4]) 
+            };
+
+            return View(receiptViewModel);
         }
 
 
