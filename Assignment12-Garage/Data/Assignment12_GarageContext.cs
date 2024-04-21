@@ -16,9 +16,11 @@ namespace Assignment12_Garage.Data
         }
 
         public DbSet<Assignment12_Garage.Models.Vehicle> Vehicle { get; set; } = default!;
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Vehicle>().HasData(
@@ -29,6 +31,5 @@ namespace Assignment12_Garage.Data
                 new Vehicle { Id = 5, VehicleType = VehicleType.Car, RegNumber = "424242", Color = "Purple", Brand = "Ford", VehicleModel = "Fiesta", NrOfWheels = 4, ArrivalDate = DateTime.Parse("2001-01-05"), ParkingSpot = "5" }
                 );
         }
-        public DbSet<ReceiptViewModel> ReceiptViewModel { get; set; } = default!;
     }
 }
