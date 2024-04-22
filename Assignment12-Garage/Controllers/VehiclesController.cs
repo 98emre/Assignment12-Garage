@@ -344,6 +344,18 @@ namespace Assignment12_Garage.Controllers
 
                 string parkingSpot = FindParkingSpot();
 
+                if (vehicle.VehicleType == VehicleType.Motorcycle)
+                {
+                    // Initiate ParkingHelper class
+                    ParkingHelper parkingHelper = new ParkingHelper(_context);
+                    string lookForSpot = parkingHelper.TryFindMotorcycleSpot();
+                    // If lookForSpot is not just an empty string. Then we found a good spot.
+                    if (lookForSpot != "")
+                    {
+                        parkingSpot = parkingHelper.TryFindMotorcycleSpot();
+                    }
+                }
+
                 vehicle.ParkingSpot = parkingSpot;
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
