@@ -99,28 +99,28 @@ namespace Assignment12_Garage.Controllers
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
-            var vehicles = _context.Vehicle.AsQueryable();
+            var vehicles = await _context.Vehicle.ToListAsync();
 
             switch (sortOrder)
             {
                 case "vehicleType":
-                    vehicles = vehicles.OrderBy(v => v.VehicleType);
+                    vehicles = vehicles.OrderBy(v => v.VehicleType).ToList();
                     break;
                 case "regNumber":
-                    vehicles = vehicles.OrderBy(v => v.RegNumber);
+                    vehicles = vehicles.OrderBy(v => v.RegNumber).ToList();
                     break;
                 case "arrivalDate":
-                    vehicles = vehicles.OrderBy(v => v.ArrivalDate);
+                    vehicles = vehicles.OrderBy(v => v.ArrivalDate).ToList();
                     break;
                 case "parkingSpot":
-                    vehicles = vehicles.OrderBy(v => v.ParkingSpot);
+                    vehicles = vehicles.OrderBy(v => int.TryParse(v.ParkingSpot, out int spot) ? spot : int.MaxValue).ToList();
                     break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.Id);
+                    vehicles = vehicles.OrderBy(v => v.Id).ToList();
                     break;
             }
 
-            var sortedVehicles = await vehicles
+            var sortedVehicles = vehicles
                         .Select(v => new VehicleViewModel
                         {
                             Id = v.Id,
@@ -128,7 +128,7 @@ namespace Assignment12_Garage.Controllers
                             RegNumber = v.RegNumber,
                             ArrivalDate = v.ArrivalDate,
                             ParkingSpot = v.ParkingSpot
-                        }).ToListAsync();
+                        }).ToList();
 
             return View("Index", sortedVehicles);
         }
@@ -374,7 +374,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = "Vehicle is checked in";
+                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is check in";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -424,6 +424,9 @@ namespace Assignment12_Garage.Controllers
 
                     _context.Update(existingVehicle);
                     await _context.SaveChangesAsync();
+
+                    TempData["Message"] = $"Vehicle with registration number {existingVehicle.RegNumber} is updated";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -436,7 +439,6 @@ namespace Assignment12_Garage.Controllers
                         throw;
                     }
                 }
-                TempData["Message"] = "Vehicle is updated";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -472,7 +474,6 @@ namespace Assignment12_Garage.Controllers
                 string receiptString = $"{receipt.RegNumber},{receipt.ArrivalDate},{receipt.CheckoutDate},{receipt.TotalParkingHours},{receipt.Price}";
                 TempData["ReceiptString"] = receiptString;
                 TempData["Price"] = receipt.Price.ToString("#,##0.00");
-                TempData["Message"] = "Vehicle is updated";
 
                 return View(vehicle);
 
@@ -494,7 +495,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Vehicle.Remove(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = "Vehicle is checked out";
+                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is checkout";
                 TempData["VehicleCheckedOut"] = true;
             }
 
@@ -523,7 +524,6 @@ namespace Assignment12_Garage.Controllers
 
             return View(receiptViewModel);
         }
-
 
         private bool VehicleExists(int id)
         {

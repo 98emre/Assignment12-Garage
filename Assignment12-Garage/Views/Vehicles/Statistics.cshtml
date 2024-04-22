@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = "Statistics";
 }
-
+<body>
 <h1>Statistics</h1>
 
 <div class="table-responsive">
-<table class="table table-bordered table-sm">
+<table class="table table-bordered border-3 border-dark  table-sm">
     <thead>
         <tr>
             <th>Vehicle Type</th>
@@ -25,12 +25,15 @@
 </table>
 </div>
 
-<div>
-    <p>Total Revenue Est: @ViewBag.TotalRevenue kr</p>
+<div class="d-flex align-items-center mb-2">
+    <img src="/images/sack-dollar-solid.svg" width="40"alt="Alternate Text" />
+    <h4 class="m-0 px-2">Total Revenue Est: @ViewBag.TotalRevenue kr</h4>
 </div>
-<div>
-    <p>Total Number of Wheels: @ViewBag.TotalWheels</p>
+<div class="d-flex align-items-center mt-2 mb-2">
+    <img src="/images/record-vinyl-solid.svg" width="40" alt="Alternate Text" />
+    <h4 class ="m-0 px-2">Total Number of Wheels: @ViewBag.TotalWheels</h4>
 </div>
 
 <a asp-action="Index" class="btn btn-secondary">Return Back</a>
 
+</body>

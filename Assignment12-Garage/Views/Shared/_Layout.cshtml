@@ -13,10 +13,10 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-primary border-bottom box-shadow mb-3 fixed-top">
             <div class="container-fluid">
                 <img class="p-1" src="/images/warehouse-solid (1).svg" width="40px" height="40px" alt="Alternate Text" />
-                <a class="navbar-brand" asp-area="" asp-controller="Vehicles" asp-action="Index">Garage</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Garage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -32,6 +32,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Vehicles" asp-action="Index">Garage</a>
                         </li>*@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Vehicles" asp-action="Index">GarageList</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Vehicles" asp-action="GarageView">Garage</a>
                         </li>
@@ -49,7 +52,7 @@
         </main>
     </div>
 
-    <footer class="border-top border-dark footer bg-primary p-3">
+    <footer class="footer fixed-bottom border-top border-dark bg-primary p-3">
         <div class="container">
             &copy; 2024 @*- Assignment12_Garage - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
         </div>
