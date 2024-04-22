@@ -1,9 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<body>
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to the Garage</h1>
+   <div class="text-start m-3 p-5">
+    <p>In this garage you can:</p>
+        <div class="list-group">
+            <a href="/Vehicles/Create" class="list-group-item list-group-item-action list-group-item-primary">Park a vehicle</a>
+            <a href="/Vehicles/GarageView" class="list-group-item list-group-item-action list-group-item-primary">See the garage</a>
+            <a href="/Vehicles/Index" class="list-group-item list-group-item-action list-group-item-primary">See a list of all vehicles</a>
+            <a href="/Vehicles/Statistics" class="list-group-item list-group-item-action list-group-item-primary">Look at garage statistics</a>
+        </div>
+    </div>
 </div>
-</body>
