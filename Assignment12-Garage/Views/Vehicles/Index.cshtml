@@ -26,10 +26,6 @@
 {
     <div class="alert alert-success" role="alert">
         @ViewBag.Message
-        @if (ViewBag.VehicleCheckedOut != null && (bool)ViewBag.VehicleCheckedOut)
-        {
-            <a asp-action="Receipt" asp-controller="Vehicles" class="ps-1">View Receipt</a>
-        }
     </div>
 }
 
@@ -72,7 +68,7 @@
                             <a asp-action="Sort" asp-route-sortOrder="arrivalDate" class="text-black">Arrival Date</a>
                         </th>
                      
-                        <th class="px-6 py-4 text-left font-weight-bold d-flex">
+                        <th class="px-6 py-4 text-left font-weight-bold">
                              <a asp-action="Sort" asp-route-sortOrder="parkingSpot" class="text-black">Parking Spot</a>
                         </th>
                         
