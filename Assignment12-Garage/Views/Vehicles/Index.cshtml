@@ -28,7 +28,7 @@
         @ViewBag.Message
         @if (ViewBag.VehicleCheckedOut != null && (bool)ViewBag.VehicleCheckedOut)
         {
-            <a asp-action="Receipt" asp-controller="Vehicles">View Receipt</a>
+            <a asp-action="Receipt" asp-controller="Vehicles" class="ps-1">View Receipt</a>
         }
     </div>
 }
