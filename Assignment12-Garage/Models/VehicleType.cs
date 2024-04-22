@@ -2,6 +2,6 @@
 {
     public enum VehicleType
     {
-        Car, Airplane, Boat, Bus, Truck
+        Car, Airplane, Boat, Bus, Truck, Motorcycle
     }
 }
