@@ -362,7 +362,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = "Vehicle is checked in";
+                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is check in";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -412,6 +412,9 @@ namespace Assignment12_Garage.Controllers
 
                     _context.Update(existingVehicle);
                     await _context.SaveChangesAsync();
+
+                    TempData["Message"] = $"Vehicle with registration number {existingVehicle.RegNumber} is updated";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -424,7 +427,6 @@ namespace Assignment12_Garage.Controllers
                         throw;
                     }
                 }
-                TempData["Message"] = "Vehicle is updated";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -460,7 +462,6 @@ namespace Assignment12_Garage.Controllers
                 string receiptString = $"{receipt.RegNumber},{receipt.ArrivalDate},{receipt.CheckoutDate},{receipt.TotalParkingHours},{receipt.Price}";
                 TempData["ReceiptString"] = receiptString;
                 TempData["Price"] = receipt.Price.ToString("#,##0.00");
-                TempData["Message"] = "Vehicle is updated";
 
                 return View(vehicle);
 
@@ -482,7 +483,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Vehicle.Remove(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = "Vehicle is checked out";
+                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is checkout";
                 TempData["VehicleCheckedOut"] = true;
             }
 
@@ -511,7 +512,6 @@ namespace Assignment12_Garage.Controllers
 
             return View(receiptViewModel);
         }
-
 
         private bool VehicleExists(int id)
         {
