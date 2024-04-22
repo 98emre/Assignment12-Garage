@@ -40,20 +40,7 @@ namespace Assignment12_Garage.Controllers
             }
         }
 
-        private string FindParkingSpot()
-        {
-            for (int i = 0; i < ParkingSpots.Count; i++)
-            {
-                if (ParkingSpots[i] == null)
-                {
-                    int parkingSpotNumber = i + 1;
-                    ParkingSpots[i] = parkingSpotNumber.ToString();
-                    return ParkingSpots[i];
-                }
-            }
-
-            return null;
-        }
+       
 
         [HttpGet]
         public IActionResult Statistics()
@@ -516,6 +503,68 @@ namespace Assignment12_Garage.Controllers
         private bool VehicleExists(int id)
         {
             return _context.Vehicle.Any(e => e.Id == id);
+        }
+
+        private string FindParkingSpot()
+        {
+            for (int i = 0; i < ParkingSpots.Count; i++)
+            {
+                if (ParkingSpots[i] == null)
+                {
+                    int parkingSpotNumber = i + 1;
+                    ParkingSpots[i] = parkingSpotNumber.ToString();
+                    return ParkingSpots[i];
+                }
+            }
+
+            return null;
+        }
+
+        private string FindParkingSpot(VehicleType vehicleType)
+        {
+            int spotsNeeded = GetVehicleSize(vehicleType);
+
+            for (int i = 0; i < ParkingSpots.Count - spotsNeeded + 1; i++)
+            {
+                bool spotAvailable = true;
+                for (int j = 0; j < spotsNeeded; j++)
+                {
+                    if (ParkingSpots[i + j] != null)
+                    {
+                        spotAvailable = false;
+                        break;
+                    }
+                }
+                if (spotAvailable)
+                {
+                    for (int j = 0; j < spotsNeeded; j++)
+                    {
+                        ParkingSpots[i + j] = (i + j + 1).ToString();
+                    }
+                    return ParkingSpots[i];
+                }
+            }
+
+            return null;
+        }
+
+        private int GetVehicleSize(VehicleType vehicleType)
+        {
+            switch (vehicleType)
+            {
+                case VehicleType.Car:
+                        return 1;
+
+                case VehicleType.Truck:
+                    return 2;
+
+                case VehicleType.Airplane:
+                case VehicleType.Boat:
+                    return 3;
+
+                default:
+                    return 1;
+            }
         }
     }
 }
