@@ -6,5 +6,7 @@
         public VehicleType VehicleType { get; set; }
         public string RegNumber { get; set; }
         public DateTime ArrivalDate { get; set; }
+    
+        public string? ParkingSpot { get; set; }
     }
 }

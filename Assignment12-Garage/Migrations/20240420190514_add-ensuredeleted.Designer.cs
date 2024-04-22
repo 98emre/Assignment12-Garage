@@ -4,6 +4,7 @@ using Assignment12_Garage.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment12_Garage.Migrations
 {
     [DbContext(typeof(Assignment12_GarageContext))]
-    partial class Assignment12_GarageContextModelSnapshot : ModelSnapshot
+    [Migration("20240420190514_add-ensuredeleted")]
+    partial class addensuredeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +48,7 @@ namespace Assignment12_Garage.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ParkingSpot")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ParkingSpot");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RegNumber")
                         .IsRequired()

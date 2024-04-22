@@ -3,9 +3,10 @@
 @{
     ViewData["Title"] = "Index";
 }
+
 <div class="d-flex flex-row justify-content-center">
-<img class="p-1" src="/images/warehouse-solid (1).svg" width="50px" height="50px" alt="Alternate Text" />
-<h1 class="p-1">Garage</h1>
+    <img class="p-1" src="/images/warehouse-solid (1).svg" width="50px" height="50px" alt="Alternate Text" />
+    <h1 class="p-1">Garage</h1>
 </div>
 
 @if(TempData.ContainsKey("SearchFail")){
@@ -25,6 +26,10 @@
 {
     <div class="alert alert-success" role="alert">
         @ViewBag.Message
+        @if (ViewBag.VehicleCheckedOut != null && (bool)ViewBag.VehicleCheckedOut)
+        {
+            <a asp-action="Receipt" asp-controller="Vehicles">View Receipt</a>
+        }
     </div>
 }
 
@@ -46,33 +51,45 @@
                         <th class="px-6 py-4 text-left font-weight-bold">
                             <a asp-action="Sort" asp-route-sortOrder="arrivalDate" class="text-black">Arrival Date</a>
                         </th>
-
-                            <th>
-                               
-                                    <h5>Available Parking Spaces: @ViewBag.AvailableSpaces</h5>
-                   
-                            </th>
+                     
+                        <th class="px-6 py-4 text-left font-weight-bold d-flex">
+                             <a asp-action="Sort" asp-route-sortOrder="parkingSpot" class="text-black">Parking Spot</a>
+                        </th>
+                        
+                        
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td class="px-6 py-3">
+                            <td class="px-6 py-4">
                                 @Html.DisplayFor(modelItem => item.VehicleType)
                             </td>
-                            <td class="px-6 py-3">
-                                @Html.DisplayFor(modelItem => item.RegNumber)
+
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.RegNumber)
                             </td>
-                            <td class="px-6 py-3">
-                                @Html.DisplayFor(modelItem => item.ArrivalDate)
+                        
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.ArrivalDate)
                             </td>
-                            <td class="px-6 py-3">
-                                <a class="btn-sm btn-warning p-1 text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a class="btn-sm btn-success p-1 text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a class="btn-sm btn-danger p-1 text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
+
+                            <td class="px-6 py-4">
+                                    @Html.DisplayFor(modelItem => item.ParkingSpot)
                             </td>
-                        </tr>
+                            
+                                <td class="px-6 py-4">
+                                    <div class="d-flex">
+                                        <a class="btn-sm btn-warning p-1 text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                        <span style="background-color: black; margin: 0 4px;">|</span>
+                                        <a class="btn-sm btn-success p-1 text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                        <span style="background-color: black; margin: 0 4px;">|</span>
+                                        <a class="btn-sm btn-danger p-1 text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Checkout</a>
+                                    </div>
+                                </td>
+                         </tr>
                     }
                     </tbody>
                 </table>
@@ -98,10 +115,4 @@
         </div>
     </div>
 </div>
-
-        <th></th>
-     </tr>
-</thead>
-
-
 

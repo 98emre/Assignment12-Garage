@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment12_Garage.Migrations
 {
     [DbContext(typeof(Assignment12_GarageContext))]
-    [Migration("20240417103156_SeedData")]
-    partial class SeedData
+    [Migration("20240420153142_PuttingBackColumn")]
+    partial class PuttingBackColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,10 @@ namespace Assignment12_Garage.Migrations
                     b.Property<int>("NrOfWheels")
                         .HasColumnType("int");
 
+                    b.Property<string>("ParkingSpot")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ParkingSpot");
+
                     b.Property<string>("RegNumber")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -71,6 +75,7 @@ namespace Assignment12_Garage.Migrations
                             Brand = "Stenaline",
                             Color = "Blue",
                             NrOfWheels = 0,
+                            ParkingSpot = "1",
                             RegNumber = "ABC123",
                             VehicleModel = "JokeBoat",
                             VehicleType = 2
@@ -82,6 +87,7 @@ namespace Assignment12_Garage.Migrations
                             Brand = "Aston Martin",
                             Color = "Yellow",
                             NrOfWheels = 4,
+                            ParkingSpot = "2",
                             RegNumber = "BRUM",
                             VehicleModel = "BRUM",
                             VehicleType = 0
@@ -93,6 +99,7 @@ namespace Assignment12_Garage.Migrations
                             Brand = "Boeing",
                             Color = "White",
                             NrOfWheels = 6,
+                            ParkingSpot = "3",
                             RegNumber = "1800FLY",
                             VehicleModel = "OSAIsJustASuggestion",
                             VehicleType = 1
@@ -104,6 +111,7 @@ namespace Assignment12_Garage.Migrations
                             Brand = "Volvo",
                             Color = "Deep Blue",
                             NrOfWheels = 6,
+                            ParkingSpot = "4",
                             RegNumber = "VTF696",
                             VehicleModel = "Long Boy",
                             VehicleType = 3
@@ -115,6 +123,7 @@ namespace Assignment12_Garage.Migrations
                             Brand = "Ford",
                             Color = "Purple",
                             NrOfWheels = 4,
+                            ParkingSpot = "5",
                             RegNumber = "424242",
                             VehicleModel = "Fiesta",
                             VehicleType = 0

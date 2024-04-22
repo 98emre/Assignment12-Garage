@@ -17,10 +17,42 @@ namespace Assignment12_Garage.Controllers
     {
         private readonly Assignment12_GarageContext _context;
         private const int MaxParkingSpaces = 25;
+        private List<string> ParkingSpots;
 
         public VehiclesController(Assignment12_GarageContext context)
         {
             _context = context;
+
+            ParkingSpots = new List<string>();
+            var parkedVehicles = _context.Vehicle.Select(v => v.ParkingSpot).ToList();
+
+            for (int i = 1; i <= MaxParkingSpaces; i++)
+            {
+                if(parkedVehicles.Contains(i.ToString()))
+                {
+                    ParkingSpots.Add(i.ToString());
+                }
+
+                else
+                {
+                    ParkingSpots.Add(null);
+                }
+            }
+        }
+
+        private string FindParkingSpot()
+        {
+            for (int i = 0; i < ParkingSpots.Count; i++)
+            {
+                if (ParkingSpots[i] == null)
+                {
+                    int parkingSpotNumber = i + 1;
+                    ParkingSpots[i] = parkingSpotNumber.ToString();
+                    return ParkingSpots[i];
+                }
+            }
+
+            return null;
         }
 
         [HttpGet]
@@ -80,6 +112,9 @@ namespace Assignment12_Garage.Controllers
                 case "arrivalDate":
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate);
                     break;
+                case "parkingSpot":
+                    vehicles = vehicles.OrderBy(v => v.ParkingSpot);
+                    break;
                 default:
                     vehicles = vehicles.OrderBy(v => v.Id);
                     break;
@@ -91,7 +126,8 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             return View("Index", sortedVehicles);
@@ -132,7 +168,8 @@ namespace Assignment12_Garage.Controllers
                             Id = v.Id,
                             VehicleType = v.VehicleType,
                             RegNumber = v.RegNumber,
-                            ArrivalDate = v.ArrivalDate
+                            ArrivalDate = v.ArrivalDate,
+                            ParkingSpot = v.ParkingSpot
                         }).ToListAsync();
 
             if (search.Count == 0)
@@ -161,7 +198,8 @@ namespace Assignment12_Garage.Controllers
                           Id = v.Id,
                           VehicleType = v.VehicleType,
                           RegNumber = v.RegNumber,
-                          ArrivalDate = v.ArrivalDate
+                          ArrivalDate = v.ArrivalDate,
+                          ParkingSpot = v.ParkingSpot
                       }).ToListAsync();
 
             if (search.Count == 0)
@@ -183,10 +221,17 @@ namespace Assignment12_Garage.Controllers
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
-
             if (TempData.ContainsKey("Message"))
             {
                 ViewBag.Message = TempData["Message"];
+            }
+            if (TempData.ContainsKey("VehicleCheckedOut"))
+            {
+                ViewBag.VehicleCheckedOut = TempData["VehicleCheckedOut"];
+            }
+            else
+            {
+                ViewBag.VehicleCheckedOut = false;
             }
 
             var vehicles = await _context.Vehicle
@@ -195,34 +240,53 @@ namespace Assignment12_Garage.Controllers
                     Id = v.Id,
                     VehicleType = v.VehicleType,
                     RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate
+                    ArrivalDate = v.ArrivalDate,
+                    ParkingSpot = v.ParkingSpot
                 }).ToListAsync();
 
             return View(vehicles);
         }
 
-        public async Task<IActionResult> GarageView()
+        public IActionResult GarageView()
         {
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
 
-            if (TempData.ContainsKey("Message"))
+            var vehicleList = new List<VehicleViewModel>();
+            int index = 0;
+
+            foreach (var spot in ParkingSpots)
             {
-                ViewBag.Message = TempData["Message"];
+                
+              index++;
+
+               var vehicleOnSpot = _context.Vehicle.ToList().FirstOrDefault(v => v.ParkingSpot == spot);
+                
+                if (vehicleOnSpot != null)
+                {
+                  vehicleList.Add(new VehicleViewModel
+                  {
+                      Id = vehicleOnSpot.Id,
+                      VehicleType = vehicleOnSpot.VehicleType,
+                      RegNumber = vehicleOnSpot.RegNumber,
+                      ArrivalDate = vehicleOnSpot.ArrivalDate,
+                      ParkingSpot = vehicleOnSpot.ParkingSpot
+                  });
+                }
+                
+                else
+                {
+                    vehicleList.Add(new VehicleViewModel
+                    {
+                        ParkingSpot = index.ToString()
+                      });
+                }              
             }
 
-            var vehicles = await _context.Vehicle
-                .Select(v => new VehicleViewModel
-                {
-                    Id = v.Id,
-                    VehicleType = v.VehicleType,
-                    RegNumber = v.RegNumber,
-                    ArrivalDate = v.ArrivalDate
-                }).ToListAsync();
-
-            return View(vehicles);
+            return View(vehicleList);
         }
+
 
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -291,7 +355,9 @@ namespace Assignment12_Garage.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+                string parkingSpot = FindParkingSpot();
 
+                vehicle.ParkingSpot = parkingSpot;
                 vehicle.ArrivalDate = DateTime.Now;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
@@ -384,15 +450,20 @@ namespace Assignment12_Garage.Controllers
             {
                 ReceiptViewModel receipt = new ReceiptViewModel();
 
+
+                receipt.RegNumber = vehicle.RegNumber;
                 receipt.ArrivalDate = vehicle.ArrivalDate;
                 receipt.CheckoutDate = DateTime.Now;
                 receipt.CalculateTotalParkingHours();
                 receipt.CalculatePrice();
 
-                var price = receipt.Price.ToString("#,##0.00"); ;
-                TempData["Price"] = $"{price}";
+                string receiptString = $"{receipt.RegNumber},{receipt.ArrivalDate},{receipt.CheckoutDate},{receipt.TotalParkingHours},{receipt.Price}";
+                TempData["ReceiptString"] = receiptString;
+                TempData["Price"] = receipt.Price.ToString("#,##0.00");
                 TempData["Message"] = "Vehicle is updated";
+
                 return View(vehicle);
+
             }
         }
 
@@ -405,14 +476,42 @@ namespace Assignment12_Garage.Controllers
 
             if (vehicle != null)
             {
+                var spotNumber = vehicle.ParkingSpot;
+                ParkingSpots[int.Parse(spotNumber) - 1] = null;
+
                 _context.Vehicle.Remove(vehicle);
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = "Vehicle is checked out";
+                TempData["VehicleCheckedOut"] = true;
             }
 
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Vehicle is checked out";
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Receipt()
+        {
+            string receiptString = TempData["ReceiptString"] as string;
+
+            if (string.IsNullOrEmpty(receiptString))
+            {
+                return NotFound();
+            }
+
+            string[] receiptDetails = receiptString.Split(',');
+
+            var receiptViewModel = new ReceiptViewModel
+            {
+                RegNumber = receiptDetails[0],
+                ArrivalDate = DateTime.Parse(receiptDetails[1]), 
+                CheckoutDate = DateTime.Parse(receiptDetails[2]), 
+                TotalParkingHours = int.Parse(receiptDetails[3]),
+                Price = double.Parse(receiptDetails[4]) 
+            };
+
+            return View(receiptViewModel);
+        }
+
 
         private bool VehicleExists(int id)
         {
