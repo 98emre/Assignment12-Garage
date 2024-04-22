@@ -99,28 +99,28 @@ namespace Assignment12_Garage.Controllers
             int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
             ViewBag.AvailableSpaces = availableSpaces;
 
-            var vehicles = _context.Vehicle.AsQueryable();
+            var vehicles = await _context.Vehicle.ToListAsync();
 
             switch (sortOrder)
             {
                 case "vehicleType":
-                    vehicles = vehicles.OrderBy(v => v.VehicleType);
+                    vehicles = vehicles.OrderBy(v => v.VehicleType).ToList();
                     break;
                 case "regNumber":
-                    vehicles = vehicles.OrderBy(v => v.RegNumber);
+                    vehicles = vehicles.OrderBy(v => v.RegNumber).ToList();
                     break;
                 case "arrivalDate":
-                    vehicles = vehicles.OrderBy(v => v.ArrivalDate);
+                    vehicles = vehicles.OrderBy(v => v.ArrivalDate).ToList();
                     break;
                 case "parkingSpot":
-                    vehicles = vehicles.OrderBy(v => v.ParkingSpot);
+                    vehicles = vehicles.OrderBy(v => int.TryParse(v.ParkingSpot, out int spot) ? spot : int.MaxValue).ToList();
                     break;
                 default:
-                    vehicles = vehicles.OrderBy(v => v.Id);
+                    vehicles = vehicles.OrderBy(v => v.Id).ToList();
                     break;
             }
 
-            var sortedVehicles = await vehicles
+            var sortedVehicles = vehicles
                         .Select(v => new VehicleViewModel
                         {
                             Id = v.Id,
@@ -128,7 +128,7 @@ namespace Assignment12_Garage.Controllers
                             RegNumber = v.RegNumber,
                             ArrivalDate = v.ArrivalDate,
                             ParkingSpot = v.ParkingSpot
-                        }).ToListAsync();
+                        }).ToList();
 
             return View("Index", sortedVehicles);
         }
