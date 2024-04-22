@@ -225,14 +225,6 @@ namespace Assignment12_Garage.Controllers
             {
                 ViewBag.Message = TempData["Message"];
             }
-            if (TempData.ContainsKey("VehicleCheckedOut"))
-            {
-                ViewBag.VehicleCheckedOut = TempData["VehicleCheckedOut"];
-            }
-            else
-            {
-                ViewBag.VehicleCheckedOut = false;
-            }
 
             var vehicles = await _context.Vehicle
                 .Select(v => new VehicleViewModel
@@ -464,15 +456,12 @@ namespace Assignment12_Garage.Controllers
             {
                 ReceiptViewModel receipt = new ReceiptViewModel();
 
-
                 receipt.RegNumber = vehicle.RegNumber;
                 receipt.ArrivalDate = vehicle.ArrivalDate;
                 receipt.CheckoutDate = DateTime.Now;
                 receipt.CalculateTotalParkingHours();
                 receipt.CalculatePrice();
 
-                string receiptString = $"{receipt.RegNumber},{receipt.ArrivalDate},{receipt.CheckoutDate},{receipt.TotalParkingHours},{receipt.Price}";
-                TempData["ReceiptString"] = receiptString;
                 TempData["Price"] = receipt.Price.ToString("#,##0.00");
 
                 return View(vehicle);
@@ -492,37 +481,26 @@ namespace Assignment12_Garage.Controllers
                 var spotNumber = vehicle.ParkingSpot;
                 ParkingSpots[int.Parse(spotNumber) - 1] = null;
 
+                ReceiptViewModel receiptViewModel = new ReceiptViewModel();
+
+
+                receiptViewModel.RegNumber = vehicle.RegNumber;
+                receiptViewModel.ArrivalDate = vehicle.ArrivalDate;
+                receiptViewModel.CheckoutDate = DateTime.Now;
+                receiptViewModel.CalculateTotalParkingHours();
+                receiptViewModel.CalculatePrice();
+
+                TempData["Price"] = receiptViewModel.Price.ToString("#,##0.00");
+
                 _context.Vehicle.Remove(vehicle);
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is checkout";
-                TempData["VehicleCheckedOut"] = true;
+
+                return View("Receipt", receiptViewModel);
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult Receipt()
-        {
-            string receiptString = TempData["ReceiptString"] as string;
-
-            if (string.IsNullOrEmpty(receiptString))
-            {
-                return NotFound();
-            }
-
-            string[] receiptDetails = receiptString.Split(',');
-
-            var receiptViewModel = new ReceiptViewModel
-            {
-                RegNumber = receiptDetails[0],
-                ArrivalDate = DateTime.Parse(receiptDetails[1]), 
-                CheckoutDate = DateTime.Parse(receiptDetails[2]), 
-                TotalParkingHours = int.Parse(receiptDetails[3]),
-                Price = double.Parse(receiptDetails[4]) 
-            };
-
-            return View(receiptViewModel);
         }
 
         private bool VehicleExists(int id)
