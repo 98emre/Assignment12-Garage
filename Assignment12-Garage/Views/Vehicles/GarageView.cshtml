@@ -4,11 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="container-fluid border border-5">
-    <div class="mt-5 mb-3">
+<div class="container-fluid border border-5 border-secondary">
+    <div class="mt-5 mb-3 d-flex align-items-center justify-content-center">
         @if (ViewBag.AvailableSpaces > 0)
         {
-            <a asp-action="Create" class="btn btn-primary">Park Vehicle</a>
+            <a asp-action="Create" class="btn btn-primary mx-2">Park Vehicle</a>
         }
         else
         {
@@ -33,7 +33,7 @@
         <br />
         <button type="submit" class="btn btn-secondary">Search</button>
     </form>
-<div class="row border border-3 m-2">
+<div class="row border border-3 border-primary m-2">
     @foreach (var item in Model)
     {
         <div class="col-md-4">
