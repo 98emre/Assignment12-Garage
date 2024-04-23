@@ -83,6 +83,12 @@ namespace Assignment12_Garage.Controllers
         {
             var vehicles = await _context.Vehicle.ToListAsync();
 
+            if (vehicles.Count() == 0)
+            {
+                TempData["SortOnEmptyList"] = "The list is empty";
+                return RedirectToAction(nameof(Index)); 
+            }
+
             switch (sortOrder)
             {
                 case "vehicleType":
@@ -205,7 +211,7 @@ namespace Assignment12_Garage.Controllers
                 .Count();
 
             int availableSpaces = MaxParkingSpaces - spaces;
-            ViewBag.AvailableSpaces = availableSpaces;
+            ViewBag.AvailableVehicels = _context.Vehicle.ToList().Count();
 
             if (TempData.ContainsKey("Message"))
             {
@@ -367,7 +373,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is check in";
+                TempData["Message"] = $"Vehicle with registration number ({vehicle.RegNumber}) is check in";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -418,7 +424,7 @@ namespace Assignment12_Garage.Controllers
                     _context.Update(existingVehicle);
                     await _context.SaveChangesAsync();
 
-                    TempData["Message"] = $"Vehicle with registration number {existingVehicle.RegNumber} is updated";
+                    TempData["Message"] = $"Vehicle with registration number ({existingVehicle.RegNumber}) is updated";
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -497,7 +503,7 @@ namespace Assignment12_Garage.Controllers
                 _context.Vehicle.Remove(vehicle);
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"Vehicle with registration number {vehicle.RegNumber} is checkout";
+                TempData["Message"] = $"Vehicle with registration number ({vehicle.RegNumber}) is checkout";
 
                 return View("Receipt", receiptViewModel);
             }
