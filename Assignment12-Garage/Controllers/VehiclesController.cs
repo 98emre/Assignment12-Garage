@@ -232,7 +232,14 @@ namespace Assignment12_Garage.Controllers
 
         public IActionResult GarageView()
         {
-            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            int spaces = _context.Vehicle
+                 .Where(v => v.ParkingSpot != "Empty")
+                 .Select(v => v.ParkingSpot)
+                 .Distinct()
+                 .Count();
+
+            int availableSpaces = MaxParkingSpaces - spaces;
+
             ViewBag.AvailableSpaces = availableSpaces;
 
 
