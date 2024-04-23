@@ -203,7 +203,13 @@ namespace Assignment12_Garage.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
+            int spaces = _context.Vehicle
+                .Where(v => v.ParkingSpot != "Empty")
+                .Select(v => v.ParkingSpot)
+                .Distinct()
+                .Count();
+
+            int availableSpaces = MaxParkingSpaces - spaces;
             ViewBag.AvailableSpaces = availableSpaces;
 
             if (TempData.ContainsKey("Message"))
@@ -298,9 +304,13 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            int totalVehicles = _context.Vehicle.Count();
+            int spaces = _context.Vehicle
+                              .Where(v => v.ParkingSpot != "Empty")
+                              .Select(v => v.ParkingSpot)
+                              .Distinct()
+                              .Count();
 
-            if (totalVehicles >= MaxParkingSpaces)
+            if (spaces >= MaxParkingSpaces)
             {
                 TempData["Message"] = "Parking is full. Cannot check in new vehicle.";
                 return RedirectToAction(nameof(Index));
@@ -324,9 +334,13 @@ namespace Assignment12_Garage.Controllers
                     return View(vehicle);
                 }
 
-                int totalVehicles = _context.Vehicle.Count();
+                int spaces = _context.Vehicle
+                              .Where(v => v.ParkingSpot != "Empty")
+                              .Select(v => v.ParkingSpot)
+                              .Distinct()
+                              .Count();
 
-                if (totalVehicles >= MaxParkingSpaces)
+                if (spaces >= MaxParkingSpaces)
                 {
                     TempData["Message"] = "Parking is full. Cannot check in new vehicle.";
                     return RedirectToAction(nameof(Index));
