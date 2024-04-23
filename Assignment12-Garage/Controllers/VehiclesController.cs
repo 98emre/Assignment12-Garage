@@ -81,9 +81,6 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> Sort(string sortOrder)
         {
-            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
-            ViewBag.AvailableSpaces = availableSpaces;
-
             var vehicles = await _context.Vehicle.ToListAsync();
 
             switch (sortOrder)
@@ -121,9 +118,6 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> Filter(string regNumber, string color, string brand)
         {
-            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
-            ViewBag.AvailableSpaces = availableSpaces;
-
             if (string.IsNullOrEmpty(regNumber) && string.IsNullOrEmpty(color) && string.IsNullOrEmpty(brand))
             {
                 TempData["SearchFail"] = "Please provide input for at least one search criteria.";
@@ -173,9 +167,6 @@ namespace Assignment12_Garage.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowAll()
         {
-            int availableSpaces = MaxParkingSpaces - _context.Vehicle.Count();
-            ViewBag.AvailableSpaces = availableSpaces;
-
             var query = _context.Vehicle.AsQueryable();
             var search = await query
                       .Select(v => new VehicleViewModel
