@@ -481,6 +481,7 @@ namespace Assignment12_Garage.Controllers
 
                 ReceiptViewModel receiptViewModel = new ReceiptViewModel();
 
+                receiptViewModel.VehicleType = vehicle.VehicleType;
                 receiptViewModel.RegNumber = vehicle.RegNumber;
                 receiptViewModel.ArrivalDate = vehicle.ArrivalDate;
                 receiptViewModel.CheckoutDate = DateTime.Now;

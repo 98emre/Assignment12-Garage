@@ -6,6 +6,9 @@ namespace Assignment12_Garage.Models.ViewModels
     {
         public int Id { get; set; }
 
+        [Display(Name = "Vehicle Type")]
+        public VehicleType VehicleType { get; set; }
+
         [Display(Name = "Registration Number")]
         public string RegNumber { get; set; }
 
