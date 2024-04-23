@@ -87,15 +87,19 @@ namespace Assignment12_Garage.Controllers
             {
                 case "vehicleType":
                     vehicles = vehicles.OrderBy(v => v.VehicleType).ToList();
+                    TempData["Sort"] = "Vehicle type sort was done";
                     break;
                 case "regNumber":
                     vehicles = vehicles.OrderBy(v => v.RegNumber).ToList();
+                    TempData["Sort"] = "Registration number sort was done";
                     break;
                 case "arrivalDate":
                     vehicles = vehicles.OrderBy(v => v.ArrivalDate).ToList();
+                    TempData["Sort"] = "Arrival Date sort was done";
                     break;
                 case "parkingSpot":
                     vehicles = vehicles.OrderBy(v => int.TryParse(v.ParkingSpot, out int spot) ? spot : int.MaxValue).ToList();
+                    TempData["Sort"] = "Parking Spot sort was done";
                     break;
                 default:
                     vehicles = vehicles.OrderBy(v => v.Id).ToList();
