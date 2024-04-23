@@ -35,7 +35,7 @@ namespace Assignment12_Garage.Controllers
 
                 else
                 {
-                    ParkingSpots.Add(null);
+                    ParkingSpots.Add("Empty");
                 }
             }
         }
@@ -439,6 +439,7 @@ namespace Assignment12_Garage.Controllers
             {
                 return NotFound();
             }
+
             else
             {
                 ReceiptViewModel receipt = new ReceiptViewModel();
@@ -466,10 +467,9 @@ namespace Assignment12_Garage.Controllers
             if (vehicle != null)
             {
                 var spotNumber = vehicle.ParkingSpot;
-                ParkingSpots[int.Parse(spotNumber) - 1] = null;
+                ParkingSpots[int.Parse(spotNumber) - 1] = "Empty";
 
                 ReceiptViewModel receiptViewModel = new ReceiptViewModel();
-
 
                 receiptViewModel.RegNumber = vehicle.RegNumber;
                 receiptViewModel.ArrivalDate = vehicle.ArrivalDate;
@@ -499,62 +499,13 @@ namespace Assignment12_Garage.Controllers
         {
             for (int i = 0; i < ParkingSpots.Count; i++)
             {
-                if (ParkingSpots[i] == null)
+                if (ParkingSpots[i] == "Empty")
                 {
-                    int parkingSpotNumber = i + 1;
-                    ParkingSpots[i] = parkingSpotNumber.ToString();
-                    return ParkingSpots[i];
+                    return (i + 1).ToString();
                 }
             }
 
-            return null;
-        }
-
-        private string FindParkingSpot(VehicleType vehicleType)
-        {
-            int spotsNeeded = GetVehicleSize(vehicleType);
-
-            for (int i = 0; i < ParkingSpots.Count - spotsNeeded + 1; i++)
-            {
-                bool spotAvailable = true;
-                for (int j = 0; j < spotsNeeded; j++)
-                {
-                    if (ParkingSpots[i + j] != null)
-                    {
-                        spotAvailable = false;
-                        break;
-                    }
-                }
-                if (spotAvailable)
-                {
-                    for (int j = 0; j < spotsNeeded; j++)
-                    {
-                        ParkingSpots[i + j] = (i + j + 1).ToString();
-                    }
-                    return ParkingSpots[i];
-                }
-            }
-
-            return null;
-        }
-
-        private int GetVehicleSize(VehicleType vehicleType)
-        {
-            switch (vehicleType)
-            {
-                case VehicleType.Car:
-                        return 1;
-
-                case VehicleType.Truck:
-                    return 2;
-
-                case VehicleType.Airplane:
-                case VehicleType.Boat:
-                    return 3;
-
-                default:
-                    return 1;
-            }
+            return "Empty";
         }
     }
 }
