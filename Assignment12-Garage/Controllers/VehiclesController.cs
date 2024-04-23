@@ -16,7 +16,7 @@ namespace Assignment12_Garage.Controllers
     public class VehiclesController : Controller
     {
         private readonly Assignment12_GarageContext _context;
-        private const int MaxParkingSpaces = 25;
+        private const int MaxParkingSpaces = 3;
         private List<string> ParkingSpots;
 
         public VehiclesController(Assignment12_GarageContext context)
@@ -39,8 +39,6 @@ namespace Assignment12_Garage.Controllers
                 }
             }
         }
-
-       
 
         [HttpGet]
         public IActionResult Statistics()
